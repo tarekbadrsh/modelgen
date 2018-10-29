@@ -50,3 +50,13 @@ func (p *Mysql) ViewNamesQuery() string {
 func (p *Mysql) ObjectQuery() string {
 	return `SELECT * FROM %s LIMIT 0`
 }
+
+// PrimarykeyQuery interface of Get PrimaryKey Column Name.
+func (p *Mysql) PrimarykeyQuery() string {
+	return `SELECT k.column_name
+	FROM information_schema.table_constraints t
+	JOIN information_schema.key_column_usage k
+	USING(constraint_name,table_name)
+	WHERE t.constraint_type='PRIMARY KEY' 
+	  AND t.table_name='%s';`
+}

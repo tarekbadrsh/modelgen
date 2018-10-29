@@ -48,3 +48,12 @@ func (p *Oracle) ViewNamesQuery() string {
 func (p *Oracle) ObjectQuery() string {
 	return `SELECT * FROM %s WHERE 1=0`
 }
+
+// PrimarykeyQuery interface of Get PrimaryKey Column Name.
+func (p *Oracle) PrimarykeyQuery() string {
+	return `SELECT cols.column_name
+	FROM all_constraints cons, all_cons_columns cols
+	WHERE cols.table_name = '%s'
+	AND cons.constraint_type = 'P'
+	AND cons.constraint_name = cols.constraint_name`
+}

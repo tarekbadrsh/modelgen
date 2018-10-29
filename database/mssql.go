@@ -56,3 +56,12 @@ func (p *Mssql) ViewNamesQuery() string {
 func (p *Mssql) ObjectQuery() string {
 	return `SELECT * FROM %s WHERE 1=0`
 }
+
+// PrimarykeyQuery interface of Get PrimaryKey Column Name.
+func (p *Mssql) PrimarykeyQuery() string {
+	return `SELECT COLUMN_NAME
+	FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+	WHERE OBJECTPROPERTY(OBJECT_ID(CONSTRAINT_SCHEMA + '.' + QUOTENAME(CONSTRAINT_NAME)), 'IsPrimaryKey') = 1
+	AND TABLE_NAME = '%s' AND TABLE_SCHEMA = 'Schema'
+	`
+}

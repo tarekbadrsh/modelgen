@@ -48,3 +48,9 @@ type ViewNamesQuery interface {
 	ObjectQuery() string
 	ViewNamesQuery() string
 }
+
+// PrimarykeyQuery interface of Get PrimaryKey Column Name.
+type PrimarykeyQuery interface {
+	DB() *sql.DB
+	PrimarykeyQuery() string
+}

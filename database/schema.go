@@ -109,3 +109,9 @@ func objects(db DBQuery, objnames []string) (map[string][]*sql.ColumnType, error
 	}
 	return m, nil
 }
+
+// Primarykeys queries the database and returns list PrimaryKey Columns.
+func Primarykeys(db PrimarykeyQuery, name string) ([]string, error) {
+	query := fmt.Sprintf(db.PrimarykeyQuery(), name)
+	return names(db.DB(), query)
+}

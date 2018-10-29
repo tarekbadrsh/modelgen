@@ -13,14 +13,15 @@ import (
 type Field struct {
 	DatabaseName string
 	SQLType      string
+	IsPrimaryKey bool
 	GoType       reflect.Type
 	GoName       string
 	DALfmt       string
 	DTOfmt       string
 }
 
-// ColToField  : Convert Column to Field
-func ColToField(col *sql.ColumnType) Field {
+// colToField  : Convert Column to Field
+func colToField(col *sql.ColumnType, primarykeys []string) Field {
 
 	f := Field{
 		DatabaseName: col.Name(),
@@ -28,10 +29,19 @@ func ColToField(col *sql.ColumnType) Field {
 		GoType:       col.ScanType(),
 		GoName:       dbutils.FmtFieldName(col.Name()),
 	}
-
+	for _, p := range primarykeys {
+		if p == f.DatabaseName {
+			f.IsPrimaryKey = true
+			break
+		}
+	}
 	var annotations []string
 	annotations = append(annotations, fmt.Sprintf("json:\"%s\"", f.DatabaseName))
-	annotations = append(annotations, fmt.Sprintf("gorm:\"column:%s\"", f.DatabaseName))
+	gormannotations := fmt.Sprintf("gorm:\"column:%s\"", f.DatabaseName)
+	if f.IsPrimaryKey {
+		gormannotations = fmt.Sprintf("gorm:\"column:%s;primary_key:true\"", f.DatabaseName)
+	}
+	annotations = append(annotations, gormannotations)
 	f.DALfmt = fmt.Sprintf("%s %s `%s`", f.GoName, f.GoType, strings.Join(annotations, " "))
 	f.DTOfmt = fmt.Sprintf("%s %s `%s`", f.GoName, f.GoType, strings.Join(annotations, " "))
 	return f

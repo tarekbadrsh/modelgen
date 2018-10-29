@@ -48,3 +48,32 @@ func (p *Sqlite) ViewNamesQuery() string {
 func (p *Sqlite) ObjectQuery() string {
 	return `SELECT * FROM %s LIMIT 0`
 }
+
+// PrimarykeyQuery interface of Get PrimaryKey Column Name.
+func (p *Sqlite) PrimarykeyQuery() string {
+	return `WITH RECURSIVE split(content, last, rest) AS (
+		VALUES('', '', (select substr(q,0,instr(q, ')')) as pr from (
+		  select substr(sql, instr(sql, 'PRIMARY KEY (')+13) as q from sqlite_master where type='table' and name='languages'
+		)))
+		UNION ALL
+		  SELECT
+		
+			CASE WHEN last = ','
+					THEN
+						substr(rest, 1, 1)
+					ELSE
+						content || substr(rest, 1, 1)
+			END,
+			 substr(rest, 1, 1),
+			 substr(rest, 2)
+		  FROM split
+		  WHERE rest <> ''
+		)
+		SELECT
+			  ltrim(REPLACE(content,',','')) AS 'ValueSplit'
+		FROM
+			   split
+		WHERE
+			   last = ',' OR rest ='';
+	`
+}
