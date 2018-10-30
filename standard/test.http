@@ -1,0 +1,28 @@
+
+GET http://localhost:8899/actors/2
+
+###
+GET http://localhost:8899/actors
+###
+POST http://localhost:8899/actors
+
+{   
+    "actor_id": 201,
+    "first_name": "hamada",
+    "last_name": "ali",
+    "last_update": "2013-05-26T14:47:57.62Z"
+}
+###
+PUT http://localhost:8899/actors
+
+{   
+    "actor_id": 201,
+    "first_name": "hamadaWWW",
+    "last_name": "aliMM",
+    "last_update": "2013-05-26T14:47:11.62Z"
+}
+###
+DELETE   http://localhost:8899/actors/201 
+###
+GET http://localhost:8899/actors/201
+###
