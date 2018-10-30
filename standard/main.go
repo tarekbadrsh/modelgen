@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -11,13 +10,11 @@ import (
 )
 
 func main() {
-	fmt.Println("Go ORM Tutorial")
-
+	// configruation
 	if err := db.InitDB("postgres", "host=127.0.0.1 port=5432 user=tarek password=123 dbname=dvdrental sslmode=disable"); err != nil {
 		panic(err)
 	}
+	defer db.Close()
 	r := api.ConfigRouter()
 	log.Fatal(http.ListenAndServe(":8899", r))
-
-	db.Close()
 }

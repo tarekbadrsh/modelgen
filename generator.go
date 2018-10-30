@@ -14,13 +14,17 @@ type ModelInfo struct {
 	StructNameDAL   string
 	StructNameDTO   string
 	ShortStructName string
+	IsTable         bool
 	TableName       string
+	IsView          bool
+	ViewName        string
 	Fields          []Field
 	Import          map[string]bool
 }
 
 // GenerateStruct generates a struct for the given table.
-func GenerateStruct(pkgName, tableName string, cols []*sql.ColumnType, primarykeys []string) *ModelInfo {
+func GenerateStruct(pkgName, tableName string, viewName string, cols []*sql.ColumnType, primarykeys []string) *ModelInfo {
+
 	structName := dbutils.FmtFieldName(tableName)
 	var modelInfo = &ModelInfo{
 		PackageName:     pkgName,
@@ -28,7 +32,10 @@ func GenerateStruct(pkgName, tableName string, cols []*sql.ColumnType, primaryke
 		StructNameDTO:   fmt.Sprintf("%vDTO", structName),
 		ShortStructName: strings.ToLower(string(structName[0])),
 		TableName:       tableName,
+		ViewName:        viewName,
 	}
+	modelInfo.IsTable = tableName != ""
+	modelInfo.IsView = viewName != ""
 
 	modelInfo.Import = make(map[string]bool)
 	for _, col := range cols {

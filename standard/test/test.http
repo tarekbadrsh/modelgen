@@ -8,8 +8,8 @@ POST http://localhost:8899/actors
 
 {   
     "actor_id": 201,
-    "first_name": "hamada",
-    "last_name": "ali",
+    "first_name": "foo",
+    "last_name": "bar",
     "last_update": "2013-05-26T14:47:57.62Z"
 }
 ###
@@ -17,9 +17,9 @@ PUT http://localhost:8899/actors
 
 {   
     "actor_id": 201,
-    "first_name": "hamadaWWW",
-    "last_name": "aliMM",
-    "last_update": "2013-05-26T14:47:11.62Z"
+    "first_name": "foofoo",
+    "last_name": "barbar",
+    "last_update": "2017-05-26T14:10:10.62Z"
 }
 ###
 DELETE   http://localhost:8899/actors/201 

@@ -7,7 +7,7 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/standard/dto"
 )
 
-// ConvertActorID : covnert id string to id int32.
+// ConvertActorID : covnert ActorID string to ActorID int32.
 func ConvertActorID(str string) (int32, error) {
 	pram, err := strconv.ParseInt(str, 10, 64)
 	if err != nil {
@@ -17,13 +17,13 @@ func ConvertActorID(str string) (int32, error) {
 	return id, nil
 }
 
-// GetAllActors actors.
+// GetAllActors : get All actors.
 func GetAllActors() ([]*dto.ActorDTO, error) {
 	actors := dal.GetAllActors()
 	return dto.ActorDALToDTOArr(actors)
 }
 
-// GetActor actor by id.
+// GetActor : get one actor by id.
 func GetActor(id int32) (*dto.ActorDTO, error) {
 	actor, err := dal.GetActor(id)
 	if err != nil {
@@ -32,7 +32,7 @@ func GetActor(id int32) (*dto.ActorDTO, error) {
 	return dto.ActorDALToDTO(actor)
 }
 
-// CreateActor create new actor.
+// CreateActor : create new actor.
 func CreateActor(a *dto.ActorDTO) (*dto.ActorDTO, error) {
 	actor, err := a.ActorDTOToDAL()
 	if err != nil {
@@ -45,7 +45,7 @@ func CreateActor(a *dto.ActorDTO) (*dto.ActorDTO, error) {
 	return dto.ActorDALToDTO(newactor)
 }
 
-// UpdateActor .
+// UpdateActor : update exist actor.
 func UpdateActor(a *dto.ActorDTO) (*dto.ActorDTO, error) {
 	actor, err := a.ActorDTOToDAL()
 	if err != nil {
@@ -58,7 +58,7 @@ func UpdateActor(a *dto.ActorDTO) (*dto.ActorDTO, error) {
 	return dto.ActorDALToDTO(updateactor)
 }
 
-// DeleteActor delete actor by id.
+// DeleteActor : delete actor by id.
 func DeleteActor(id int32) error {
 	return dal.DeleteActor(id)
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-// ConfigRouter .
+// ConfigRouter : configure endpoints in the server.
 func ConfigRouter() http.Handler {
 	router := httprouter.New()
 	configActorsRouter(router)
@@ -19,6 +19,10 @@ func writeJSON(w http.ResponseWriter, v interface{}) {
 	data, _ := json.Marshal(v)
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.Header().Set("Cache-Control", "no-cache")
+	// allow cross domain AJAX requests
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
 	w.Write(data)
 }
 

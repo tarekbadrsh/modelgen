@@ -7,7 +7,7 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/standard/dal"
 )
 
-// ActorDTO :
+// ActorDTO : data transfer object of (actor) table.
 type ActorDTO struct {
 	ActorID    int32     `json:"actor_id"`
 	FirstName  string    `json:"first_name"`
@@ -38,13 +38,13 @@ func ActorDALToDTO(a *dal.ActorDAL) (*ActorDTO, error) {
 }
 
 // ActorDALToDTOArr : convert Array of ActorDAL to Array of ActorDTO
-func ActorDALToDTOArr(lis []*dal.ActorDAL) ([]*ActorDTO, error) {
+func ActorDALToDTOArr(actors []*dal.ActorDAL) ([]*ActorDTO, error) {
 	var err error
-	res := make([]*ActorDTO, len(lis), len(lis))
-	for i, actor := range lis {
+	res := make([]*ActorDTO, len(actors), len(actors))
+	for i, actor := range actors {
 		res[i], err = ActorDALToDTO(actor)
 		if err != nil {
-			return res, errors.Wrapf(err, "convert error at %d", i)
+			return res, errors.Wrapf(err, "convert at %d:%v", i, actor)
 		}
 	}
 	return res, nil

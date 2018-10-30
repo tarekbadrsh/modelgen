@@ -8,18 +8,6 @@ import (
 	"fmt"
 )
 
-// TableNames returns a list of all table names in the current schema
-// (not including system tables).
-func TableNames(db TableNamesQuery) ([]string, error) {
-	return names(db.DB(), db.TableNamesQuery())
-}
-
-// ViewNames returns a list of all view names in the current schema
-// (not including system views).
-func ViewNames(db ViewNamesQuery) ([]string, error) {
-	return names(db.DB(), db.ViewNamesQuery())
-}
-
 // names queries the database schema metadata and returns
 // either a list of table or view names.
 //
@@ -44,14 +32,47 @@ func names(db *sql.DB, query string) ([]string, error) {
 	return names, nil
 }
 
+// TableNames returns a list of all table names in the current schema
+// (not including system tables).
+func TableNames(db TableNamesQuery) ([]string, error) {
+	return names(db.DB(), db.TableNamesQuery())
+}
+
 // Table returns the column type metadata for the given table name.
 func Table(db TableNamesQuery, name string) ([]*sql.ColumnType, error) {
 	return object(db, name)
 }
 
+// Tables returns column type metadata for all tables in the current schema
+// (not including system tables). The returned map is keyed by table name.
+//func Tables(db *sql.DB) (map[string][]*sql.ColumnType, error) {
+func Tables(db TableNamesQuery) (map[string][]*sql.ColumnType, error) {
+	tablesNames, err := TableNames(db)
+	if err != nil {
+		return nil, err
+	}
+	return objects(db, tablesNames)
+}
+
+// ViewNames returns a list of all view names in the current schema
+// (not including system views).
+func ViewNames(db ViewNamesQuery) ([]string, error) {
+	return names(db.DB(), db.ViewNamesQuery())
+}
+
 // View returns the column type metadata for the given view name.
 func View(db ViewNamesQuery, name string) ([]*sql.ColumnType, error) {
 	return object(db, name)
+}
+
+// Views returns column type metadata for all views in the current schema
+// (not including system views). The returned map is keyed by view name.
+func Views(db ViewNamesQuery) (map[string][]*sql.ColumnType, error) {
+	viewNames, err := ViewNames(db)
+	if err != nil {
+		return nil, err
+	}
+	return objects(db, viewNames)
 }
 
 // Object queries the database and returns column type metadata
@@ -67,27 +88,6 @@ func object(db DBQuery, name string) ([]*sql.ColumnType, error) {
 	}
 	defer rows.Close()
 	return rows.ColumnTypes()
-}
-
-// Tables returns column type metadata for all tables in the current schema
-// (not including system tables). The returned map is keyed by table name.
-//func Tables(db *sql.DB) (map[string][]*sql.ColumnType, error) {
-func Tables(db TableNamesQuery) (map[string][]*sql.ColumnType, error) {
-	tablesNames, err := TableNames(db)
-	if err != nil {
-		return nil, err
-	}
-	return objects(db, tablesNames)
-}
-
-// Views returns column type metadata for all views in the current schema
-// (not including system views). The returned map is keyed by view name.
-func Views(db ViewNamesQuery) (map[string][]*sql.ColumnType, error) {
-	viewNames, err := ViewNames(db)
-	if err != nil {
-		return nil, err
-	}
-	return objects(db, viewNames)
 }
 
 // objects queries the database and returns metadata about the
