@@ -27,7 +27,7 @@ func getAllActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 func getActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := bll.ConvertActorID(ps.ByName("id"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "Error: parameter (id) should be int32", http.StatusBadRequest)
 		return
 	}
 
@@ -72,7 +72,7 @@ func putActor(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 func deleteActor(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := bll.ConvertActorID(ps.ByName("id"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "Error: parameter (id) should be int32", http.StatusBadRequest)
 		return
 	}
 

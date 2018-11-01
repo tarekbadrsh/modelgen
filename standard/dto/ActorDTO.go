@@ -40,7 +40,7 @@ func ActorDALToDTO(a *dal.ActorDAL) (*ActorDTO, error) {
 // ActorDALToDTOArr : convert Array of ActorDAL to Array of ActorDTO
 func ActorDALToDTOArr(actors []*dal.ActorDAL) ([]*ActorDTO, error) {
 	var err error
-	res := make([]*ActorDTO, len(actors), len(actors))
+	res := make([]*ActorDTO, len(actors))
 	for i, actor := range actors {
 		res[i], err = ActorDALToDTO(actor)
 		if err != nil {

@@ -1,20 +1,42 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
 	_ "github.com/lib/pq"
+	"github.com/tarekbadrshalaan/goStuff/configuration"
 	"github.com/tarekbadrshalaan/modelgen/standard/api"
 	"github.com/tarekbadrshalaan/modelgen/standard/db"
 )
 
+type config struct {
+	DBConnectionString string
+	DBEngine           string
+	WebAddress         string
+	WebPort            int
+}
+
 func main() {
-	// configruation
-	if err := db.InitDB("postgres", "host=127.0.0.1 port=5432 user=tarek password=123 dbname=dvdrental sslmode=disable"); err != nil {
+	// configruation.
+	c := &config{}
+	err := configuration.JSON("config.json", c)
+	if err != nil {
+		panic(err)
+	}
+	// configruation.
+
+	// database.
+	if err := db.InitDB(c.DBEngine, c.DBConnectionString); err != nil {
 		panic(err)
 	}
 	defer db.Close()
+	// database.
+
+	// webserver.
 	r := api.ConfigRouter()
-	log.Fatal(http.ListenAndServe(":8899", r))
+	addr := fmt.Sprintf("%v:%d", c.WebAddress, c.WebPort)
+	log.Fatal(http.ListenAndServe(addr, r))
+	// webserver.
 }

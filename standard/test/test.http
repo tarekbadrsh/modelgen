@@ -22,7 +22,7 @@ PUT http://localhost:8899/actors
     "last_update": "2017-05-26T14:10:10.62Z"
 }
 ###
-DELETE   http://localhost:8899/actors/201 
+DELETE   http://localhost:7070/actors/201
 ###
 GET http://localhost:8899/actors/201
 ###
