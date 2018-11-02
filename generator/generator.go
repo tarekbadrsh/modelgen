@@ -1,4 +1,4 @@
-package modelgen
+package generator
 
 import (
 	"database/sql"

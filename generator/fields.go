@@ -1,4 +1,4 @@
-package modelgen
+package generator
 
 import (
 	"database/sql"
@@ -37,12 +37,14 @@ func colToField(col *sql.ColumnType, primarykeys []string) Field {
 	}
 	var annotations []string
 	annotations = append(annotations, fmt.Sprintf("json:\"%s\"", f.DatabaseName))
+	f.DTOfmt = fmt.Sprintf("%s %s `%s`", f.GoName, f.GoType, strings.Join(annotations, " "))
+
 	gormannotations := fmt.Sprintf("gorm:\"column:%s\"", f.DatabaseName)
 	if f.IsPrimaryKey {
 		gormannotations = fmt.Sprintf("gorm:\"column:%s;primary_key:true\"", f.DatabaseName)
 	}
 	annotations = append(annotations, gormannotations)
 	f.DALfmt = fmt.Sprintf("%s %s `%s`", f.GoName, f.GoType, strings.Join(annotations, " "))
-	f.DTOfmt = fmt.Sprintf("%s %s `%s`", f.GoName, f.GoType, strings.Join(annotations, " "))
+
 	return f
 }

@@ -1,15 +1,15 @@
 package templates
 
-// DALTmpl : template of DAL
-var DALTmpl = `package dal
+// dalTmpl : template of DAL
+var dalTmpl = `package dal
 
 import ( 
 	{{ range $key, $value := .Import}}"{{$key}}"
 	{{ end }}
 	"{{.PackageName}}/db"
-) 
+)  
 
-// {{DAL .StructName}} : data access layer ({{.TableName}}) table.
+// {{DAL .StructName}} : data access layer {{ if .IsTable}} ({{.TableName}}) table.{{ else if .IsView}} ({{.ViewName}}) view.{{ end }}
 type {{DAL .StructName}} struct {
 	{{range .Fields}}{{.DALfmt}}
 	{{end}}
@@ -37,6 +37,7 @@ func Get{{.StructName}}(id {{.IDType}}) (*{{DAL .StructName}}, error) {
 	return {{.ShortStructName}}, nil
 }
 
+{{ if .IsTable}}
 // Create{{.StructName}} : create new {{.TableName}}.
 func Create{{.StructName}}({{.ShortStructName}} *{{DAL .StructName}}) (*{{DAL .StructName}}, error) {
 	result := db.DB().Create({{.ShortStructName}})
@@ -68,5 +69,6 @@ func Delete{{.StructName}}(id {{.IDType}}) error {
 	result := db.DB().Delete({{.ShortStructName}})
 	return result.Error
 }
+{{ end }}
 
 `

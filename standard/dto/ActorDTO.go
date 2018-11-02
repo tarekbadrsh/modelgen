@@ -3,11 +3,10 @@ package dto
 import (
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/tarekbadrshalaan/modelgen/standard/dal"
 )
 
-// ActorDTO : data transfer object of (actor) table.
+// ActorDTO : data transfer object (actor) table.
 type ActorDTO struct {
 	ActorID    int32     `json:"actor_id"`
 	FirstName  string    `json:"first_name"`
@@ -44,7 +43,7 @@ func ActorDALToDTOArr(actors []*dal.ActorDAL) ([]*ActorDTO, error) {
 	for i, actor := range actors {
 		res[i], err = ActorDALToDTO(actor)
 		if err != nil {
-			return res, errors.Wrapf(err, "convert at %d:%v", i, actor)
+			return res, err
 		}
 	}
 	return res, nil

@@ -10,7 +10,42 @@ import (
 
 // DALTemplate : return template of DAL.
 func DALTemplate() (*template.Template, error) {
-	return getTemplate(DALTmpl)
+	return getTemplate(dalTmpl)
+}
+
+// DTOTemplate : return template of DTO.
+func DTOTemplate() (*template.Template, error) {
+	return getTemplate(dtoTmpl)
+}
+
+// BLLTemplate : return template of BLL.
+func BLLTemplate() (*template.Template, error) {
+	return getTemplate(bllTmpl)
+}
+
+// APITemplate : return template of API.
+func APITemplate() (*template.Template, error) {
+	return getTemplate(apiTmpl)
+}
+
+// APIRouterTemplate : return template of API.
+func APIRouterTemplate() (*template.Template, error) {
+	return getTemplate(apiRouterTmpl)
+}
+
+// DBTemplate : return template of Database.
+func DBTemplate() (*template.Template, error) {
+	return getTemplate(dbTmpl)
+}
+
+// ConfigTemplate : return template of Config.
+func ConfigTemplate() (*template.Template, error) {
+	return getTemplate(configTmpl)
+}
+
+// MainTemplate : return template of Main.
+func MainTemplate() (*template.Template, error) {
+	return getTemplate(mainTmpl)
 }
 
 func getTemplate(temp string) (*template.Template, error) {
