@@ -15,7 +15,7 @@ import (
 func ConfigRouter() http.Handler {
 	router := httprouter.New() 
 	
-	{{ range $StructName := .}}config{{pluralize $StructName}}Router(router)
+	{{ range $StructName, $value := .}}config{{pluralize $StructName}}Router(router)
 	{{ end }}
 	return router
 }

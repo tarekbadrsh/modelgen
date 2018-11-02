@@ -48,6 +48,11 @@ func MainTemplate() (*template.Template, error) {
 	return getTemplate(mainTmpl)
 }
 
+// ModuleTemplate : return template of go.mod.
+func ModuleTemplate() (*template.Template, error) {
+	return getTemplate(moduleTmpl)
+}
+
 func getTemplate(temp string) (*template.Template, error) {
 	var funcMap = template.FuncMap{
 		"pluralize":      inflection.Plural,

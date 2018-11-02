@@ -3,30 +3,19 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 
 	"github.com/pkg/errors"
 )
 
-// InitDatabase is initialize database object.
-func InitDatabase(driverName, connectionString string) (*sql.DB, error) {
-	if connectionString == "" {
-		return nil, fmt.Errorf("no ConnectionString, please add db ConnectionString")
-	}
-	db, err := sql.Open(driverName, connectionString)
-	if err != nil {
-		return nil, errors.Wrap(err, "Open database")
-	}
-	err = db.Ping()
-	if err != nil {
-		return nil, errors.Wrap(err, "Ping database")
-	}
-	return db, nil
-}
-
 // DBDriver interface of database object and Driver.
 type DBDriver interface {
 	DB() *sql.DB
-	InitDB(connectionString string) (*sql.DB, error)
+	InitDB(connectionString string) error
+	ObjectQuery() string
+	TableNamesQuery() string
+	ViewNamesQuery() string
+	PrimarykeyQuery() string
 }
 
 // DBQuery :.
@@ -53,4 +42,38 @@ type ViewNamesQuery interface {
 type PrimarykeyQuery interface {
 	DB() *sql.DB
 	PrimarykeyQuery() string
+}
+
+// GetDatabaseEngine : return DBEngine By name
+func GetDatabaseEngine(DBEngine string) DBDriver {
+	switch strings.ToLower(DBEngine) {
+	case "postgres":
+		return &Postgres{}
+	case "mssql":
+		return &Mssql{}
+	case "mysql":
+		return &Mysql{}
+	case "oracle":
+		return &Oracle{}
+	case "sqlite":
+		return &Sqlite{}
+	}
+
+	return nil
+}
+
+// InitDatabase is initialize database object.
+func InitDatabase(driverName, connectionString string) (*sql.DB, error) {
+	if connectionString == "" {
+		return nil, fmt.Errorf("no ConnectionString, please add db ConnectionString")
+	}
+	db, err := sql.Open(driverName, connectionString)
+	if err != nil {
+		return nil, errors.Wrap(err, "Open database")
+	}
+	err = db.Ping()
+	if err != nil {
+		return nil, errors.Wrap(err, "Ping database")
+	}
+	return db, nil
 }
