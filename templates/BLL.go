@@ -6,8 +6,8 @@ var bllTmpl = `package bll
 import (
 	"strconv"
 
-	"{{.PackageName}}/dal"
-	"{{.PackageName}}/dto"
+	"{{.Module}}/dal"
+	"{{.Module}}/dto"
 )
 
 {{ if (ne .IDType "string")}}

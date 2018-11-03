@@ -10,11 +10,25 @@ import (
 
 // DBDriver interface of database object and Driver.
 type DBDriver interface {
+	// DB get database object.
 	DB() *sql.DB
+
+	// InitDB : initialize database object.
 	InitDB(connectionString string) error
+
+	// GoImport : return import path of go package.
+	GoImport() string
+
+	// returns details query table/veiw of one object.
 	ObjectQuery() string
+
+	// returns query to list table names in the current schema.
 	TableNamesQuery() string
+
+	// returns a list of all view names in the current schema.
 	ViewNamesQuery() string
+
+	// return query Get PrimaryKey Column Name.
 	PrimarykeyQuery() string
 }
 
@@ -38,7 +52,7 @@ type ViewNamesQuery interface {
 	ViewNamesQuery() string
 }
 
-// PrimarykeyQuery interface of Get PrimaryKey Column Name.
+// PrimarykeyQuery return query Get PrimaryKey Column Name.
 type PrimarykeyQuery interface {
 	DB() *sql.DB
 	PrimarykeyQuery() string

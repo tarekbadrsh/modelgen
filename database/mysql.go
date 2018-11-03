@@ -2,11 +2,19 @@ package database
 
 import (
 	"database/sql"
+
+	// Mysql driver
+	_ "github.com/go-sql-driver/mysql"
 )
 
 // Mysql driver.
 type Mysql struct {
 	db *sql.DB
+}
+
+// GoImport : return import path of go package.
+func (p *Mysql) GoImport() string {
+	return "_ \"github.com/go-sql-driver/mysql\""
 }
 
 // InitDB : initialize Mysql database object.

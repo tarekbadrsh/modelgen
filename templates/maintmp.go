@@ -8,10 +8,10 @@ import (
 	"log"
 	"net/http"
 
-	_ "github.com/lib/pq"
+	{{.DBImport}}
 	"github.com/tarekbadrshalaan/goStuff/configuration"
-	"{{.}}/api"
-	"{{.}}/db"
+	"{{.Module}}/api"
+	"{{.Module}}/db"
 )
 
 type config struct {

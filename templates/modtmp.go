@@ -1,4 +1,4 @@
 package templates
 
-// apiRouterTmpl : template of APIRouterTmpl
-var moduleTmpl = `module {{.}}`
+// moduleTmpl : template of Module.
+var moduleTmpl = `module {{.Module}}`

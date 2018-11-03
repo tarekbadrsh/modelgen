@@ -9,6 +9,11 @@ type Oracle struct {
 	db *sql.DB
 }
 
+// GoImport : return import path of go package.
+func (p *Oracle) GoImport() string {
+	return "\"gopkg.in/rana/ora.v4\""
+}
+
 // InitDB : initialize Oracle database object.
 func (p *Oracle) InitDB(connectionString string) error {
 	db, err := InitDatabase("goracle", connectionString)

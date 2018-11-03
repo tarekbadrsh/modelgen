@@ -1,26 +1,30 @@
-package server_test
+package templates
+
+// testTmpl : template of testTmpl
+var testTmpl = `package server_test
 
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
+	// "fmt"
 	"io/ioutil"
-	"math/rand"
+	// "math/rand"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
+	// "time"
+	
+	{{.DBImport}}
 
-	_ "github.com/lib/pq"
 	"github.com/tarekbadrshalaan/goStuff/configuration"
-	"github.com/tarekbadrshalaan/modelgen/standard/api"
-	"github.com/tarekbadrshalaan/modelgen/standard/db"
-	"github.com/tarekbadrshalaan/modelgen/standard/dto"
-)
+	"{{.Module}}/api"
+	"{{.Module}}/db"  
+	"{{.Module}}/dto"
+) 
 
 //!+test
 //go test -v
-func TestBase(t *testing.T) {
+func TestBase{{pluralize .StructName}}(t *testing.T) {
 	// configruation.
 	c := &config{}
 	err := configuration.JSON("test.json", c)
@@ -41,11 +45,11 @@ func TestBase(t *testing.T) {
 		name string
 		f    func(t *testing.T, h http.Handler)
 	}{
-		{name: "getActors", f: getActors},
-		{name: "getAllActors", f: getAllActors},
-		{name: "postActor", f: postActor},
-		{name: "putActor", f: putActor},
-		{name: "deleteActor", f: deleteActor},
+		{name: "get{{pluralize .StructName}}", f: get{{pluralize .StructName}}},
+		{name: "getAll{{pluralize .StructName}}", f: getAll{{pluralize .StructName}}},
+		{name: "post{{pluralize .StructName}}", f: post{{pluralize .StructName}}},
+		{name: "put{{pluralize .StructName}}", f: put{{pluralize .StructName}}},
+		{name: "delete{{pluralize .StructName}}", f: delete{{pluralize .StructName}}},
 	}
 
 	for _, tc := range tt {
@@ -53,24 +57,23 @@ func TestBase(t *testing.T) {
 			tc.f(t, h)
 		})
 	}
-
 }
 
-func getActors(t *testing.T, h http.Handler) {
+func get{{pluralize .StructName}}(t *testing.T, h http.Handler) {
 	tt := []struct {
 		name       string
 		value      string
 		expecte    string
 		err        string
 		statusCode int
-	}{
-		{name: "two", value: "2", expecte: `{"actor_id":2,"first_name":"Nick","last_name":"Wahlberg","last_update":"2013-05-26T14:47:57.62Z"}`},
-		{name: "missing id value", value: "", err: `<a href="http://:/actors">Moved Permanently</a>.`, statusCode: 301},
-		{name: "id not int32", value: "x", err: `Error: parameter (id) should be int32`, statusCode: 400},
+	}{ 
+		// {name: "two", value: "2", expecte: ` + "`" + `{{.JSONobj}}` + "`" + `},
+		{name: "missing id value", value: "", err: ` + "`" + `<a href="http://:/{{pluralizeLower .StructName}}">Moved Permanently</a>.` + "`" + `, statusCode: 301},
+		{name: "id not {{.IDType}}", value: "x", err: "Error: parameter (id) should be {{.IDType}}", statusCode: 400},
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			req, err := http.NewRequest("GET", "http://::/actors/"+tc.value, nil)
+			req, err := http.NewRequest("GET", "http://::/{{pluralizeLower .StructName}}/"+tc.value, nil)
 			if err != nil {
 				t.Fatalf("could not create request: %v", err)
 			}
@@ -108,7 +111,7 @@ func getActors(t *testing.T, h http.Handler) {
 	}
 }
 
-func getAllActors(t *testing.T, h http.Handler) {
+func getAll{{pluralize .StructName}}(t *testing.T, h http.Handler) {
 	tt := []struct {
 		name       string
 		value      string
@@ -116,12 +119,12 @@ func getAllActors(t *testing.T, h http.Handler) {
 		err        string
 		statusCode int
 	}{
-		{name: "test by count", expecte: 200},
-		{name: "wrong parameter", value: "x", err: `404 page not found`, statusCode: 404},
+		// {name: "test by count", expecte: 200},
+		{name: "wrong parameter", value: "x", err: "404 page not found", statusCode: 404},
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			req, err := http.NewRequest("GET", "http://::/actors"+tc.value, nil)
+			req, err := http.NewRequest("GET", "http://::/{{pluralizeLower .StructName}}"+tc.value, nil)
 			if err != nil {
 				t.Fatalf("could not create request: %v", err)
 			}
@@ -152,19 +155,19 @@ func getAllActors(t *testing.T, h http.Handler) {
 				return
 			}
 
-			actors := []dto.ActorDTO{}
-			err = json.Unmarshal(bytes.TrimSpace(b), &actors)
+			{{pluralizeLower .StructName}} := []dto.{{DTO .StructName}}{}
+			err = json.Unmarshal(bytes.TrimSpace(b), &{{pluralizeLower .StructName}})
 			if err != nil {
 				t.Fatal(err)
 			}
-			if len(actors) != tc.expecte {
-				t.Fatalf("expected %v; got %d", tc.expecte, len(actors))
+			if len({{pluralizeLower .StructName}}) != tc.expecte {
+				t.Fatalf("expected %v; got %d", tc.expecte, len({{pluralizeLower .StructName}}))
 			}
 		})
 	}
 }
 
-func postActor(t *testing.T, h http.Handler) {
+func post{{pluralize .StructName}}(t *testing.T, h http.Handler) {
 	tt := []struct {
 		name       string
 		body       string
@@ -172,13 +175,13 @@ func postActor(t *testing.T, h http.Handler) {
 		err        string
 		statusCode int
 	}{
-		{name: "duplicate key", body: `{"actor_id":1,"first_name":"foo","last_name":"bar","last_update":"2013-05-26T14:47:57.62Z"}`, err: `pq: duplicate key value violates unique constraint "actor_pkey"`, statusCode: 500},
-		{name: "wrong parameter", body: "x", err: `invalid character 'x' looking for beginning of value`, statusCode: 400},
-		{name: "new actor", body: `{"actor_id":201,"first_name":"foo","last_name":"bar","last_update":"2013-05-26T14:47:57.62Z"}`, expecte: `{"actor_id":201,"first_name":"foo","last_name":"bar","last_update":"2013-05-26T14:47:57.62Z"}`},
+		// {name: "duplicate key", body: ` + "`" + `{{.JSONobj}}` + "`" + `, err: ` + "`" + `pq: duplicate key value violates unique constraint "{{.TableName}}_pkey"` + "`" + `, statusCode: 500},
+		{name: "wrong parameter", body: "x", err: "invalid character 'x' looking for beginning of value", statusCode: 400},
+		// {name: "new {{pluralizeLower .StructName}}", body: ` + "`" + `{{.JSONobj}}` + "`" + `, expecte: ` + "`" + `{{.JSONobj}}` + "`" + `},
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			req, err := http.NewRequest("POST", "http://::/actors", bytes.NewBuffer([]byte(tc.body)))
+			req, err := http.NewRequest("POST", "http://::/{{pluralizeLower .StructName}}", bytes.NewBuffer([]byte(tc.body)))
 			if err != nil {
 				t.Fatalf("could not create request: %v", err)
 			}
@@ -216,7 +219,7 @@ func postActor(t *testing.T, h http.Handler) {
 	}
 }
 
-func putActor(t *testing.T, h http.Handler) {
+func put{{pluralize .StructName}}(t *testing.T, h http.Handler) {
 	tt := []struct {
 		name       string
 		body       string
@@ -224,13 +227,13 @@ func putActor(t *testing.T, h http.Handler) {
 		err        string
 		statusCode int
 	}{
-		{name: "wrong key", body: `{"actor_id":204,"first_name":"foo","last_name":"bar","last_update":"2013-05-26T14:47:57.62Z"}`, err: `record not found`, statusCode: 500},
-		{name: "wrong parameter", body: "x", err: `invalid character 'x' looking for beginning of value`, statusCode: 400},
-		{name: "update actor", body: `{"actor_id":201,"first_name":"foofoo","last_name":"barbar","last_update":"2013-05-26T14:47:57.62Z"}`, expecte: `{"actor_id":201,"first_name":"foofoo","last_name":"barbar","last_update":"2013-05-26T14:47:57.62Z"}`},
+		// {name: "wrong key", body: ` + "`" + `{{.JSONobj}}` + "`" + `, err: "record not found", statusCode: 500},
+		{name: "wrong parameter", body: "x", err: "invalid character 'x' looking for beginning of value", statusCode: 400},
+		// {name: "update {{pluralizeLower .StructName}}", body: ` + "`" + `{{.JSONobj}}` + "`" + `, expecte: ` + "`" + `{{.JSONobj}}` + "`" + `},
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			req, err := http.NewRequest("PUT", "http://::/actors", bytes.NewBuffer([]byte(tc.body)))
+			req, err := http.NewRequest("PUT", "http://::/{{pluralizeLower .StructName}}", bytes.NewBuffer([]byte(tc.body)))
 			if err != nil {
 				t.Fatalf("could not create request: %v", err)
 			}
@@ -268,7 +271,7 @@ func putActor(t *testing.T, h http.Handler) {
 	}
 }
 
-func deleteActor(t *testing.T, h http.Handler) {
+func delete{{pluralize .StructName}}(t *testing.T, h http.Handler) {
 	tt := []struct {
 		name       string
 		value      string
@@ -276,13 +279,13 @@ func deleteActor(t *testing.T, h http.Handler) {
 		err        string
 		statusCode int
 	}{
-		{name: "delete one", value: "201", expecte: ``},
-		{name: "missing id value", value: "", err: `404 page not found`, statusCode: 404},
-		{name: "id not int32", value: "x", err: `Error: parameter (id) should be int32`, statusCode: 400},
+		// {name: "delete one", value: "201", expecte: ""},
+		{name: "missing id value", value: "", err: "404 page not found", statusCode: 404},
+		{name: "id not {{.IDType}}", value: "x", err: "Error: parameter (id) should be {{.IDType}}", statusCode: 400},
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			req, err := http.NewRequest("DELETE", "http://::/actors/"+tc.value, nil)
+			req, err := http.NewRequest("DELETE", "http://::/{{pluralizeLower .StructName}}/"+tc.value, nil)
 			if err != nil {
 				t.Fatalf("could not create request: %v", err)
 			}
@@ -322,16 +325,18 @@ func deleteActor(t *testing.T, h http.Handler) {
 
 //!-tests
 
+
+/*
 //!+bench
 //go test -v  -bench=.
-func BenchmarkRead(b *testing.B) {
+func BenchmarkRead{{pluralize .StructName}}(b *testing.B) {
 	h := api.ConfigRouter()
 
 	src := rand.NewSource(time.Now().UnixNano())
 	rnd := rand.New(src)
 
 	for index := 0; index < b.N; index++ {
-		url := fmt.Sprintf("http://::/actors/%d", rnd.Intn(100)+1)
+		url := fmt.Sprintf("http://::/{{pluralizeLower .StructName}}/%d", rnd.Intn(100)+1)
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
 			b.Fatalf("could not create request: %v", err)
@@ -355,12 +360,13 @@ func BenchmarkRead(b *testing.B) {
 	}
 }
 
-func BenchmarkWrite(b *testing.B) {
+
+func BenchmarkWrite{{pluralize .StructName}}(b *testing.B) {
 	h := api.ConfigRouter()
 
 	for index := 0; index < b.N; index++ {
 		// POST
-		req, err := http.NewRequest("POST", "http://::/actors", bytes.NewBuffer([]byte(`{"actor_id":201,"first_name":"foo","last_name":"bar","last_update":"2013-05-26T14:47:57.62Z"}`)))
+		req, err := http.NewRequest("POST", "http://::/{{pluralizeLower .StructName}}", bytes.NewBuffer([]byte(` + "`" + `{{.JSONobj}}` + "`" + `)))
 		if err != nil {
 			b.Fatalf("could not create request: %v", err)
 		}
@@ -382,7 +388,7 @@ func BenchmarkWrite(b *testing.B) {
 		}
 
 		// PUT
-		req, err = http.NewRequest("PUT", "http://::/actors", bytes.NewBuffer([]byte(`{"actor_id":201,"first_name":"foofoo","last_name":"barbar","last_update":"2013-05-26T14:47:57.62Z"}`)))
+		req, err = http.NewRequest("PUT", "http://::/{{pluralizeLower .StructName}}", bytes.NewBuffer([]byte(` + "`" + `{{.JSONobj}}` + "`" + `)))
 		if err != nil {
 			b.Fatalf("could not create request: %v", err)
 		}
@@ -404,7 +410,7 @@ func BenchmarkWrite(b *testing.B) {
 		}
 
 		// DELETE
-		req, err = http.NewRequest("DELETE", "http://::/actors/201", nil)
+		req, err = http.NewRequest("DELETE", "http://::/{{pluralizeLower .StructName}}/201", nil)
 		if err != nil {
 			b.Fatalf("could not create request: %v", err)
 		}
@@ -427,5 +433,7 @@ func BenchmarkWrite(b *testing.B) {
 
 	}
 }
-
+*/
 //!-bench
+
+`

@@ -53,6 +53,16 @@ func ModuleTemplate() (*template.Template, error) {
 	return getTemplate(moduleTmpl)
 }
 
+// TestTemplate : return template of Test.
+func TestTemplate() (*template.Template, error) {
+	return getTemplate(testTmpl)
+}
+
+// TestConfigTemplate : return template of Test Config.
+func TestConfigTemplate() (*template.Template, error) {
+	return getTemplate(testConfigTmpl)
+}
+
 func getTemplate(temp string) (*template.Template, error) {
 	var funcMap = template.FuncMap{
 		"pluralize":      inflection.Plural,

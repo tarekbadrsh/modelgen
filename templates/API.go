@@ -7,8 +7,8 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	"{{.PackageName}}/bll"
-	"{{.PackageName}}/dto"
+	"{{.Module}}/bll"
+	"{{.Module}}/dto"
 )
 
 func config{{pluralize .StructName}}Router(router *httprouter.Router) {

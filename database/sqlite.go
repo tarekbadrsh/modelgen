@@ -2,11 +2,19 @@ package database
 
 import (
 	"database/sql"
+
+	// Sqlite driver
+	_ "github.com/mattn/go-sqlite3"
 )
 
 // Sqlite driver.
 type Sqlite struct {
 	db *sql.DB
+}
+
+// GoImport : return import path of go package.
+func (p *Sqlite) GoImport() string {
+	return "_ \"github.com/mattn/go-sqlite3\""
 }
 
 // InitDB : initialize Sqlite database object.

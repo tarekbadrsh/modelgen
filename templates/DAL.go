@@ -6,7 +6,7 @@ var dalTmpl = `package dal
 import ( 
 	{{ range $key, $value := .Import}}"{{$key}}"
 	{{ end }}
-	"{{.PackageName}}/db"
+	"{{.Module}}/db"
 )  
 
 // {{DAL .StructName}} : data access layer {{ if .IsTable}} ({{.TableName}}) table.{{ else if .IsView}} ({{.ViewName}}) view.{{ end }}

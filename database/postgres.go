@@ -2,11 +2,19 @@ package database
 
 import (
 	"database/sql"
+
+	// Postgres driver
+	_ "github.com/lib/pq"
 )
 
 // Postgres driver.
 type Postgres struct {
 	db *sql.DB
+}
+
+// GoImport : return import path of go package.
+func (p *Postgres) GoImport() string {
+	return "_ \"github.com/lib/pq\""
 }
 
 // InitDB : initialize postgres database object.
@@ -51,7 +59,7 @@ func (p *Postgres) ObjectQuery() string {
 	return `SELECT * FROM %s LIMIT 0`
 }
 
-// PrimarykeyQuery interface of Get PrimaryKey Column Name.
+// PrimarykeyQuery return query Get PrimaryKey Column Name.
 func (p *Postgres) PrimarykeyQuery() string {
 	return `SELECT c.column_name
 	FROM information_schema.key_column_usage AS c

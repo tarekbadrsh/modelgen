@@ -2,11 +2,19 @@ package database
 
 import (
 	"database/sql"
+
+	// Mssql driver
+	_ "github.com/denisenkom/go-mssqldb"
 )
 
 // Mssql driver.
 type Mssql struct {
 	db *sql.DB
+}
+
+// GoImport : return import path of go package.
+func (p *Mssql) GoImport() string {
+	return "_ \"github.com/denisenkom/go-mssqldb\""
 }
 
 // InitDB : initialize Mssql database object.
