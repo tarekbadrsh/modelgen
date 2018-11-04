@@ -1,4 +1,6 @@
 # modelgen
+- the project beta version is done but readme not done yet.
+
 Creates DAL,BLL,DTO,API as go package for postgresql
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-ff69b4.svg)](https://opensource.org/licenses/MIT)
