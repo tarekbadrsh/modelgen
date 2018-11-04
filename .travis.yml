@@ -10,6 +10,8 @@ env:
 before_script:
   - go get -t -v github.com/tarekbadrshalaan/modelgen/...
 
+install: true
+
 script: 
   - go build .
 
