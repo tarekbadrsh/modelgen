@@ -6,6 +6,8 @@ Creates DAL,BLL,DTO,API as go package for postgresql
 [![Go Report Card](https://goreportcard.com/badge/github.com/tarekbadrshalaan/modelgen)](https://goreportcard.com/report/github.com/tarekbadrshalaan/modelgen)
 [![Build Status](https://travis-ci.org/tarekbadrshalaan/modelgen.svg?branch=master)](https://travis-ci.org/tarekbadrshalaan/modelgen)
 [![CircleCI Status](https://circleci.com/gh/tarekbadrshalaan/modelgen.svg?style=shield)](https://circleci.com/gh/tarekbadrshalaan/modelgen)
+[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
+
 [![CircleCI Status](https://img.shields.io/github/tag-date/tarekbadrshalaan/modelgen.svg)](https://github.com/tarekbadrshalaan/modelgen/tags)
 [![CircleCI Status](https://img.shields.io/github/release/tarekbadrshalaan/modelgen.svg)](https://github.com/tarekbadrshalaan/modelgen/releases)
 
