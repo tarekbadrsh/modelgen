@@ -9,6 +9,3 @@ jobs:
     working_directory: /go/src/github.com/tarekbadrshalaan/modelgen
     steps:
       - checkout
-      - run:
-          name: "Build"
-          command: go build .
