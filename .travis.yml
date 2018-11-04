@@ -1,0 +1,17 @@
+language: go
+
+
+go:
+  - 1.11.x 
+
+before_script:
+  - go get -t -v github.com/tarekbadrshalaan/modelgen/...
+
+script:
+ - go build .
+
+notifications:
+  email:
+    recipients: tarekbadrshalaan@gmail.com
+    on_success: change
+    on_failure: always

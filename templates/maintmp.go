@@ -22,13 +22,13 @@ type config struct {
 }
 
 func main() {
-	// configruation.
+	// configurations.
 	c := &config{}
 	err := configuration.JSON("config.json", c)
 	if err != nil {
 		panic(err)
 	}
-	// configruation.
+	// configurations.
 
 	// database.
 	if err := db.InitDB(c.DBEngine, c.DBConnectionString); err != nil {

@@ -30,12 +30,12 @@ type gen struct {
 }
 
 func main() {
-	// configruation.
+	// configurations.
 	c := &config{}
 	if err := configuration.JSON("config.json", c); err != nil {
 		panic(err)
 	}
-	// configruation.
+	// configurations.
 
 	// database.
 	p := database.GetDatabaseEngine(c.DBEngine)
@@ -118,8 +118,5 @@ func generateTemplate(data interface{}, filePath string, tmpl *template.Template
 	}
 	defer f.Close()
 
-	if err = tmpl.Execute(f, data); err != nil {
-		return err
-	}
-	return nil
+	return tmpl.Execute(f, data)
 }

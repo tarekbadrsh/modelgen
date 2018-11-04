@@ -25,13 +25,13 @@ import (
 //!+test
 //go test -v
 func TestBase{{pluralize .StructName}}(t *testing.T) {
-	// configruation.
+	// configurations.
 	c := &config{}
 	err := configuration.JSON("test.json", c)
 	if err != nil {
 		panic(err)
 	}
-	// configruation.
+	// configurations.
 
 	// database.
 	if err := db.InitDB(c.DBEngine, c.DBConnectionString); err != nil {
