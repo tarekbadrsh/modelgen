@@ -8,10 +8,13 @@ before_script:
   - go get -t -v github.com/tarekbadrshalaan/modelgen/...
 
 script:
- - go build .
+  - env GO111MODULE=on go build 
+  - env GO111MODULE=on go test
+  - go build .
 
 notifications:
   email:
     recipients: tarekbadrshalaan@gmail.com
     on_success: change
     on_failure: always
+    
