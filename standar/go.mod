@@ -1,4 +1,4 @@
-module github.com/tarekbadrshalaan/modelgen/standard
+module github.com/tarekbadrshalaan/modelgen/standar
 
 require (
 	github.com/jinzhu/gorm v1.9.1

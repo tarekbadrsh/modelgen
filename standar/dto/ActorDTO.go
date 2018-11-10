@@ -3,7 +3,7 @@ package dto
 import (
 	"time"
 
-	"github.com/tarekbadrshalaan/modelgen/standard/dal"
+	"github.com/tarekbadrshalaan/modelgen/standar/dal"
 )
 
 // ActorDTO : data transfer object (actor) table.

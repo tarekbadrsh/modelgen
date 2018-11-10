@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/tarekbadrshalaan/modelgen/standard/bll"
-	"github.com/tarekbadrshalaan/modelgen/standard/dto"
+	"github.com/tarekbadrshalaan/modelgen/standar/bll"
+	"github.com/tarekbadrshalaan/modelgen/standar/dto"
 )
 
 func configActorsRouter(router *httprouter.Router) {

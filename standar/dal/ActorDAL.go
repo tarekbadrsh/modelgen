@@ -3,7 +3,7 @@ package dal
 import (
 	"time"
 
-	"github.com/tarekbadrshalaan/modelgen/standard/db"
+	"github.com/tarekbadrshalaan/modelgen/standar/db"
 )
 
 // ActorDAL : data access layer (actor) table.

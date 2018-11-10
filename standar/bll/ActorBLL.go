@@ -3,8 +3,8 @@ package bll
 import (
 	"strconv"
 
-	"github.com/tarekbadrshalaan/modelgen/standard/dal"
-	"github.com/tarekbadrshalaan/modelgen/standard/dto"
+	"github.com/tarekbadrshalaan/modelgen/standar/dal"
+	"github.com/tarekbadrshalaan/modelgen/standar/dto"
 )
 
 // ConvertActorID : covnert ActorID string to ActorID int32.

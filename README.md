@@ -5,7 +5,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/tarekbadrshalaan/modelgen)](https://goreportcard.com/report/github.com/tarekbadrshalaan/modelgen)
 [![Build Status](https://travis-ci.org/tarekbadrshalaan/modelgen.svg?branch=master)](https://travis-ci.org/tarekbadrshalaan/modelgen)
 [![CircleCI Status](https://circleci.com/gh/tarekbadrshalaan/modelgen.svg?style=shield)](https://circleci.com/gh/tarekbadrshalaan/modelgen)
-[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
+[![standar-readme compliant](https://img.shields.io/badge/readme%20style-standar-brightgreen.svg)](https://github.com/RichardLitt/standar-readme)
 
 
 
@@ -88,7 +88,7 @@ $ cd Application/
 
 
 ## standar
-- in [![standar](https://github.com/tarekbadrshalaan/modelgen/tree/master/standard)](https://github.com/tarekbadrshalaan/modelgen/tree/master/standard) you can find the expected result of the generator. 
+- in [![standar](https://github.com/tarekbadrshalaan/modelgen/tree/master/standar)](https://github.com/tarekbadrshalaan/modelgen/tree/master/standar) you can find the expected result of the generator. 
 
 ## Contributing
 
