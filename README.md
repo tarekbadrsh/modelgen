@@ -27,6 +27,7 @@ $ go get -u github.com/tarekbadrshalaan/modelgen
 $ vi config.json
   
   {
+    "AppName"               :   "Application",
     "Module"                :   "{{github.com/packagepath}}",
     "DBConnectionString"    :   "{{Database ConnectionString}}",
     "DBEngine"              :   "{{Database Engine}}",
@@ -51,8 +52,9 @@ pg_restore -U postgres -d dvdrental ~/dvdrental.tar
 
 $ vi config.json
   {
+    "AppName"               :   "Application",
     "Module"                :   "github.com/Application",
-    "DBConnectionString"    :   "{{Database ConnectionString}}",
+    "DBConnectionString"    :   "host=127.0.0.1 port=5432 user=postgres password=postgres dbname=dvdrental sslmode=disable",
     "DBEngine"              :   "postgres",
     "WebAddress"            :   "0.0.0.0",
     "WebPort"               :   7070

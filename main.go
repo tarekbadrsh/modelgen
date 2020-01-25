@@ -13,6 +13,7 @@ import (
 )
 
 type config struct {
+	AppName            string
 	Module             string
 	DBConnectionString string
 	DBEngine           string
@@ -46,11 +47,11 @@ func main() {
 	// database.
 
 	mutifiles := []gen{
-		{dir: "Application/dal", filepath: "Application/dal/%vDAL.go", tmpfunc: templates.DALTemplate},
-		{dir: "Application/bll", filepath: "Application/bll/%vBLL.go", tmpfunc: templates.BLLTemplate},
-		{dir: "Application/dto", filepath: "Application/dto/%vDTO.go", tmpfunc: templates.DTOTemplate},
-		{dir: "Application/api", filepath: "Application/api/%vAPI.go", tmpfunc: templates.APITemplate},
-		{dir: "Application/test", filepath: "Application/test/%v_test.go", tmpfunc: templates.TestTemplate, dbImport: c.DBImport},
+		{dir: c.AppName + "/dal", filepath: "%v/dal/%vDAL.go", tmpfunc: templates.DALTemplate},
+		{dir: c.AppName + "/bll", filepath: "%v/bll/%vBLL.go", tmpfunc: templates.BLLTemplate},
+		{dir: c.AppName + "/dto", filepath: "%v/dto/%vDTO.go", tmpfunc: templates.DTOTemplate},
+		{dir: c.AppName + "/api", filepath: "%v/api/%vAPI.go", tmpfunc: templates.APITemplate},
+		{dir: c.AppName + "/test", filepath: "%v/test/%v_test.go", tmpfunc: templates.TestTemplate, dbImport: c.DBImport},
 	}
 
 	tables, err := database.Tables(p)
@@ -71,7 +72,7 @@ func main() {
 			}
 			if len(primarykeys) == 1 {
 				st := generator.GenerateStruct(c.Module, table, "", cols, primarykeys, c.DBImport)
-				err = generateFile(m.dir, fmt.Sprintf(m.filepath, st.StructName), tm, st)
+				err = generateFile(m.dir, fmt.Sprintf(m.filepath, c.AppName, st.StructName), tm, st)
 				if err != nil {
 					panic(err)
 				}
@@ -81,13 +82,13 @@ func main() {
 	}
 
 	singlefile := []gen{
-		{dir: "Application/db", filepath: "Application/db/database.go", tmpfunc: templates.DBTemplate},
-		{dir: "", filepath: "Application/api/router.go", tmpfunc: templates.APIRouterTemplate, data: apiRouters},
-		{dir: "", filepath: "Application/config.json", tmpfunc: templates.ConfigTemplate, data: c},
-		{dir: "Application/test", filepath: "Application/test/test.json", tmpfunc: templates.ConfigTemplate, data: c},
-		{dir: "Application/test", filepath: "Application/test/config_test.go", tmpfunc: templates.TestConfigTemplate},
-		{dir: "", filepath: "Application/main.go", tmpfunc: templates.MainTemplate, data: c},
-		{dir: "", filepath: "Application/go.mod", tmpfunc: templates.ModuleTemplate, data: c},
+		{dir: c.AppName + "/db", filepath: c.AppName + "/db/database.go", tmpfunc: templates.DBTemplate},
+		{dir: "", filepath: c.AppName + "/api/router.go", tmpfunc: templates.APIRouterTemplate, data: apiRouters},
+		{dir: "", filepath: c.AppName + "/config.json", tmpfunc: templates.ConfigTemplate, data: c},
+		{dir: c.AppName + "/test", filepath: c.AppName + "/test/test.json", tmpfunc: templates.ConfigTemplate, data: c},
+		{dir: c.AppName + "/test", filepath: c.AppName + "/test/config_test.go", tmpfunc: templates.TestConfigTemplate},
+		{dir: "", filepath: c.AppName + "/main.go", tmpfunc: templates.MainTemplate, data: c},
+		{dir: "", filepath: c.AppName + "/go.mod", tmpfunc: templates.ModuleTemplate, data: c},
 	}
 	for _, s := range singlefile {
 		tm, err := s.tmpfunc()
@@ -102,7 +103,7 @@ func main() {
 }
 
 func generateFile(dir, filepath string, tmp *template.Template, data interface{}) error {
-	if dir != "" { // if the path already exist, don't neet to create again.
+	if dir != "" { // if the path already exist, no need to generate again.
 		err := os.MkdirAll(dir, os.ModePerm)
 		if err != nil {
 			return err

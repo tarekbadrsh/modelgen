@@ -14,6 +14,7 @@ require (
 	github.com/pkg/errors v0.8.0
 	github.com/smallnest/gen v0.0.0-20180913104330-62560eebea28
 	github.com/tarekbadrshalaan/goStuff v1.1.0
+	github.com/tarekbadrshalaan/modelgen/standar v0.0.0-20181110170703-1b849dfbccfa // indirect
 	golang.org/x/crypto v0.0.0-20181030102418-4d3f4d9ffa16 // indirect
 	golang.org/x/net v0.0.0-20181102091132-c10e9556a7bc // indirect
 	golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f // indirect

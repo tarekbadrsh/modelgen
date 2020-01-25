@@ -1,0 +1,1 @@
+module github.com/tarekbadrshalaan/modelgen/web-api

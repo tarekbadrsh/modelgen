@@ -1,6 +1,0 @@
-{
-    "DBConnectionString"    :   "host=127.0.0.1 port=5432 user=tarek password=123 dbname=dvdrental sslmode=disable",
-    "DBEngine"              :   "postgres",
-    "WebAddress"            :   "0.0.0.0",
-    "WebPort"               :   7070
-}
