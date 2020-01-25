@@ -58,6 +58,11 @@ func DockerTemplate() (*template.Template, error) {
 	return getTemplate(dockerTmpl)
 }
 
+// EnvTemplate : return template of environment variables file.
+func EnvTemplate() (*template.Template, error) {
+	return getTemplate(envTmpl)
+}
+
 // ModuleTemplate : return template of go.mod.
 func ModuleTemplate() (*template.Template, error) {
 	return getTemplate(moduleTmpl)

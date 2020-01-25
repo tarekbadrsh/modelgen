@@ -89,7 +89,15 @@ $ cd Application/
     ─────────────────────────────
 
 ```
-
+## Docker 
+```
+# build docker image
+docker build -t concept-api .
+```
+```
+# run docker container 
+docker run --rm -it -p 7070:7070 --env-file .env --network host concept-api
+```
 
 ## Concept
 - in [![standar](https://github.com/tarekbadrshalaan/modelgen/tree/master/modelgen-concept/web-api)](https://github.com/tarekbadrshalaan/modelgen/tree/master/modelgen-concept/web-api) you can find the expected result of the generator. 

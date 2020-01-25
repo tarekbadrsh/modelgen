@@ -13,12 +13,13 @@ import (
 )
 
 type config struct {
-	AppName            string
-	Module             string
-	DBConnectionString string `json:"DB_CONNECTION_STRING" envconfig:"DB_CONNECTION_STRING"`
-	DBEngine           string `json:"DB_ENGINE" envconfig:"DB_ENGINE"`
-	WebAddress         string `json:"API_ADDRESS" envconfig:"API_ADDRESS"`
-	WebPort            int    `json:"API_PORT" envconfig:"API_PORT"`
+	AppName            string `json:"App_Name"`
+	TargetDirectory    string `json:"Target_Directory"`
+	Module             string `json:"Module"`
+	DBConnectionString string `json:"DB_CONNECTION_STRING"`
+	DBEngine           string `json:"DB_ENGINE"`
+	WebAddress         string `json:"API_ADDRESS"`
+	WebPort            int    `json:"API_PORT"`
 	DBImport           string
 }
 
@@ -47,11 +48,11 @@ func main() {
 	// database.
 
 	mutifiles := []gen{
-		{dir: c.AppName + "/dal", filepath: "%v/dal/%vDAL.go", tmpfunc: templates.DALTemplate},
-		{dir: c.AppName + "/bll", filepath: "%v/bll/%vBLL.go", tmpfunc: templates.BLLTemplate},
-		{dir: c.AppName + "/dto", filepath: "%v/dto/%vDTO.go", tmpfunc: templates.DTOTemplate},
-		{dir: c.AppName + "/api", filepath: "%v/api/%vAPI.go", tmpfunc: templates.APITemplate},
-		{dir: c.AppName + "/test", filepath: "%v/test/%v_test.go", tmpfunc: templates.TestTemplate, dbImport: c.DBImport},
+		{dir: c.TargetDirectory + "/dal", filepath: "%v/dal/%vDAL.go", tmpfunc: templates.DALTemplate},
+		{dir: c.TargetDirectory + "/bll", filepath: "%v/bll/%vBLL.go", tmpfunc: templates.BLLTemplate},
+		{dir: c.TargetDirectory + "/dto", filepath: "%v/dto/%vDTO.go", tmpfunc: templates.DTOTemplate},
+		{dir: c.TargetDirectory + "/api", filepath: "%v/api/%vAPI.go", tmpfunc: templates.APITemplate},
+		{dir: c.TargetDirectory + "/test", filepath: "%v/test/%v_test.go", tmpfunc: templates.TestTemplate, dbImport: c.DBImport},
 	}
 
 	tables, err := database.Tables(p)
@@ -72,7 +73,7 @@ func main() {
 			}
 			if len(primarykeys) == 1 {
 				st := generator.GenerateStruct(c.Module, table, "", cols, primarykeys, c.DBImport)
-				err = generateFile(m.dir, fmt.Sprintf(m.filepath, c.AppName, st.StructName), tm, st)
+				err = generateFile(m.dir, fmt.Sprintf(m.filepath, c.TargetDirectory, st.StructName), tm, st)
 				if err != nil {
 					panic(err)
 				}
@@ -82,16 +83,17 @@ func main() {
 	}
 
 	singlefile := []gen{
-		{dir: c.AppName + "/db", filepath: c.AppName + "/db/database.go", tmpfunc: templates.DBTemplate},
-		{dir: c.AppName + "/test", filepath: c.AppName + "/test/test.json", tmpfunc: templates.ConfigjsonTemplate, data: c},
-		{dir: c.AppName + "/test", filepath: c.AppName + "/test/config_test.go", tmpfunc: templates.TestConfigTemplate},
-		{dir: c.AppName + "/config", filepath: c.AppName + "/config/config.go", tmpfunc: templates.ConfigTemplate},
+		{dir: c.TargetDirectory + "/db", filepath: c.TargetDirectory + "/db/database.go", tmpfunc: templates.DBTemplate},
+		{dir: c.TargetDirectory + "/test", filepath: c.TargetDirectory + "/test/test.json", tmpfunc: templates.ConfigjsonTemplate, data: c},
+		{dir: c.TargetDirectory + "/test", filepath: c.TargetDirectory + "/test/config_test.go", tmpfunc: templates.TestConfigTemplate},
+		{dir: c.TargetDirectory + "/config", filepath: c.TargetDirectory + "/config/config.go", tmpfunc: templates.ConfigTemplate},
 
-		{filepath: c.AppName + "/api/router.go", tmpfunc: templates.APIRouterTemplate, data: apiRouters},
-		{filepath: c.AppName + "/config.json", tmpfunc: templates.ConfigjsonTemplate, data: c},
-		{filepath: c.AppName + "/main.go", tmpfunc: templates.MainTemplate, data: c},
-		{filepath: c.AppName + "/go.mod", tmpfunc: templates.ModuleTemplate, data: c},
-		{filepath: c.AppName + "/Dockerfile", tmpfunc: templates.DockerTemplate, data: c},
+		{filepath: c.TargetDirectory + "/api/router.go", tmpfunc: templates.APIRouterTemplate, data: apiRouters},
+		{filepath: c.TargetDirectory + "/config.json", tmpfunc: templates.ConfigjsonTemplate, data: c},
+		{filepath: c.TargetDirectory + "/main.go", tmpfunc: templates.MainTemplate, data: c},
+		{filepath: c.TargetDirectory + "/go.mod", tmpfunc: templates.ModuleTemplate, data: c},
+		{filepath: c.TargetDirectory + "/Dockerfile", tmpfunc: templates.DockerTemplate, data: c},
+		{filepath: c.TargetDirectory + "/.env", tmpfunc: templates.EnvTemplate, data: c},
 	}
 	for _, s := range singlefile {
 		tm, err := s.tmpfunc()
