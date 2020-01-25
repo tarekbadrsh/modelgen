@@ -5,6 +5,7 @@ var apiRouterTmpl = `package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -37,7 +38,7 @@ func NewRouter() http.Handler {
 	return router
 }
 
-func writeJSON(w http.ResponseWriter, v interface{}) {
+func writeResponseJSON(w http.ResponseWriter, v interface{}, stateCode int) {
 	data, _ := json.Marshal(v)
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.Header().Set("Cache-Control", "no-cache")
@@ -45,7 +46,19 @@ func writeJSON(w http.ResponseWriter, v interface{}) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 
+	w.WriteHeader(stateCode)
 	w.Write(data)
+}
+
+func writeResponseError(w http.ResponseWriter, err error, stateCode int) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-cache")
+	// allow cross domain AJAX requests
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
+	msg := fmt.Sprintf({{backQuote}}{"errorText":"%v"}{{backQuote}}, err)
+	http.Error(w, msg, stateCode)
 }
 
 func readJSON(r *http.Request, v interface{}) error {

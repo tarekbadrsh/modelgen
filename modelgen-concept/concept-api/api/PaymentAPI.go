@@ -1,11 +1,14 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/bll"
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
+	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/logger"
+	
+	"github.com/julienschmidt/httprouter"
 )
 
 func configPaymentsRouter(routes *[]route) {
@@ -19,70 +22,88 @@ func configPaymentsRouter(routes *[]route) {
 func getAllPayments(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	payments, err := bll.GetAllPayments()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusInternalServerError)
+		return
 	}
-	writeJSON(w, payments)
+	writeResponseJSON(w, payments, http.StatusOK)
 }
 
 func getPayments(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
-	id, err := bll.ConvertPaymentID(ps.ByName("id"))
+	requestID := ps.ByName("id")
+	id, err := bll.ConvertPaymentID(requestID)
 	if err != nil {
-		http.Error(w, "Error: parameter (id) should be int32", http.StatusBadRequest)
+		msg := fmt.Errorf("Error: parameter (id) should be int32; Id=%v; err (%v)", requestID, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusBadRequest)
 		return
 	}
 	
 
 	payment, err := bll.GetPayment(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		msg := fmt.Errorf("Can’t find payment (%v); err (%v)", id, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusNotFound)
 		return
 	}
-	writeJSON(w, payment)
+	writeResponseJSON(w, payment, http.StatusOK)
 }
 
 func postPayments(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	payment := &dto.PaymentDTO{}
 	if err := readJSON(r, payment); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	result, err := bll.CreatePayment(payment)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusInternalServerError)
 		return
 	}
-	writeJSON(w, result)
+	writeResponseJSON(w, result, http.StatusCreated)
 }
 
 func putPayments(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	payment := &dto.PaymentDTO{}
 	if err := readJSON(r, payment); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	result, err := bll.UpdatePayment(payment)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
-	writeJSON(w, result)
+	writeResponseJSON(w, result, http.StatusOK)
 }
 
 func deletePayments(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
-	id, err := bll.ConvertPaymentID(ps.ByName("id"))
+	requestID := ps.ByName("id")
+	id, err := bll.ConvertPaymentID(requestID)
 	if err != nil {
-		http.Error(w, "Error: parameter (id) should be int32", http.StatusBadRequest)
+		msg := fmt.Errorf("Error: parameter (id) should be int32; Id=%v; err (%v)", requestID, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusBadRequest)
 		return
 	}
 	
 	
 	err = bll.DeletePayment(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		msg := fmt.Errorf("Payment with id (%v) does not exist; err (%v)", id, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusNotFound)
+		return
+
 	}
-	w.WriteHeader(http.StatusOK)
+	writeResponseJSON(w, true, http.StatusOK)
 }

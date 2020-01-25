@@ -1,11 +1,14 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/bll"
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
+	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/logger"
+	
+	"github.com/julienschmidt/httprouter"
 )
 
 func configAddressesRouter(routes *[]route) {
@@ -19,70 +22,88 @@ func configAddressesRouter(routes *[]route) {
 func getAllAddresses(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	addresses, err := bll.GetAllAddresses()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusInternalServerError)
+		return
 	}
-	writeJSON(w, addresses)
+	writeResponseJSON(w, addresses, http.StatusOK)
 }
 
 func getAddresses(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
-	id, err := bll.ConvertAddressID(ps.ByName("id"))
+	requestID := ps.ByName("id")
+	id, err := bll.ConvertAddressID(requestID)
 	if err != nil {
-		http.Error(w, "Error: parameter (id) should be int32", http.StatusBadRequest)
+		msg := fmt.Errorf("Error: parameter (id) should be int32; Id=%v; err (%v)", requestID, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusBadRequest)
 		return
 	}
 	
 
 	address, err := bll.GetAddress(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		msg := fmt.Errorf("Can’t find address (%v); err (%v)", id, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusNotFound)
 		return
 	}
-	writeJSON(w, address)
+	writeResponseJSON(w, address, http.StatusOK)
 }
 
 func postAddresses(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	address := &dto.AddressDTO{}
 	if err := readJSON(r, address); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	result, err := bll.CreateAddress(address)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusInternalServerError)
 		return
 	}
-	writeJSON(w, result)
+	writeResponseJSON(w, result, http.StatusCreated)
 }
 
 func putAddresses(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	address := &dto.AddressDTO{}
 	if err := readJSON(r, address); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	result, err := bll.UpdateAddress(address)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
-	writeJSON(w, result)
+	writeResponseJSON(w, result, http.StatusOK)
 }
 
 func deleteAddresses(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
-	id, err := bll.ConvertAddressID(ps.ByName("id"))
+	requestID := ps.ByName("id")
+	id, err := bll.ConvertAddressID(requestID)
 	if err != nil {
-		http.Error(w, "Error: parameter (id) should be int32", http.StatusBadRequest)
+		msg := fmt.Errorf("Error: parameter (id) should be int32; Id=%v; err (%v)", requestID, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusBadRequest)
 		return
 	}
 	
 	
 	err = bll.DeleteAddress(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		msg := fmt.Errorf("Address with id (%v) does not exist; err (%v)", id, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusNotFound)
+		return
+
 	}
-	w.WriteHeader(http.StatusOK)
+	writeResponseJSON(w, true, http.StatusOK)
 }

@@ -1,11 +1,14 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/bll"
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
+	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/logger"
+	
+	"github.com/julienschmidt/httprouter"
 )
 
 func configCitiesRouter(routes *[]route) {
@@ -19,70 +22,88 @@ func configCitiesRouter(routes *[]route) {
 func getAllCities(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	cities, err := bll.GetAllCities()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusInternalServerError)
+		return
 	}
-	writeJSON(w, cities)
+	writeResponseJSON(w, cities, http.StatusOK)
 }
 
 func getCities(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
-	id, err := bll.ConvertCityID(ps.ByName("id"))
+	requestID := ps.ByName("id")
+	id, err := bll.ConvertCityID(requestID)
 	if err != nil {
-		http.Error(w, "Error: parameter (id) should be int32", http.StatusBadRequest)
+		msg := fmt.Errorf("Error: parameter (id) should be int32; Id=%v; err (%v)", requestID, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusBadRequest)
 		return
 	}
 	
 
 	city, err := bll.GetCity(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		msg := fmt.Errorf("Can’t find city (%v); err (%v)", id, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusNotFound)
 		return
 	}
-	writeJSON(w, city)
+	writeResponseJSON(w, city, http.StatusOK)
 }
 
 func postCities(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	city := &dto.CityDTO{}
 	if err := readJSON(r, city); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	result, err := bll.CreateCity(city)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusInternalServerError)
 		return
 	}
-	writeJSON(w, result)
+	writeResponseJSON(w, result, http.StatusCreated)
 }
 
 func putCities(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	city := &dto.CityDTO{}
 	if err := readJSON(r, city); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	result, err := bll.UpdateCity(city)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
-	writeJSON(w, result)
+	writeResponseJSON(w, result, http.StatusOK)
 }
 
 func deleteCities(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
-	id, err := bll.ConvertCityID(ps.ByName("id"))
+	requestID := ps.ByName("id")
+	id, err := bll.ConvertCityID(requestID)
 	if err != nil {
-		http.Error(w, "Error: parameter (id) should be int32", http.StatusBadRequest)
+		msg := fmt.Errorf("Error: parameter (id) should be int32; Id=%v; err (%v)", requestID, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusBadRequest)
 		return
 	}
 	
 	
 	err = bll.DeleteCity(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		msg := fmt.Errorf("City with id (%v) does not exist; err (%v)", id, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusNotFound)
+		return
+
 	}
-	w.WriteHeader(http.StatusOK)
+	writeResponseJSON(w, true, http.StatusOK)
 }

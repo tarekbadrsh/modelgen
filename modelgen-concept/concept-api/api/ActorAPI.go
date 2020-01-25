@@ -1,11 +1,14 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/bll"
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
+	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/logger"
+	
+	"github.com/julienschmidt/httprouter"
 )
 
 func configActorsRouter(routes *[]route) {
@@ -19,70 +22,88 @@ func configActorsRouter(routes *[]route) {
 func getAllActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	actors, err := bll.GetAllActors()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusInternalServerError)
+		return
 	}
-	writeJSON(w, actors)
+	writeResponseJSON(w, actors, http.StatusOK)
 }
 
 func getActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
-	id, err := bll.ConvertActorID(ps.ByName("id"))
+	requestID := ps.ByName("id")
+	id, err := bll.ConvertActorID(requestID)
 	if err != nil {
-		http.Error(w, "Error: parameter (id) should be int32", http.StatusBadRequest)
+		msg := fmt.Errorf("Error: parameter (id) should be int32; Id=%v; err (%v)", requestID, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusBadRequest)
 		return
 	}
 	
 
 	actor, err := bll.GetActor(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		msg := fmt.Errorf("Can’t find actor (%v); err (%v)", id, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusNotFound)
 		return
 	}
-	writeJSON(w, actor)
+	writeResponseJSON(w, actor, http.StatusOK)
 }
 
 func postActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	actor := &dto.ActorDTO{}
 	if err := readJSON(r, actor); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	result, err := bll.CreateActor(actor)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusInternalServerError)
 		return
 	}
-	writeJSON(w, result)
+	writeResponseJSON(w, result, http.StatusCreated)
 }
 
 func putActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	actor := &dto.ActorDTO{}
 	if err := readJSON(r, actor); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	result, err := bll.UpdateActor(actor)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
-	writeJSON(w, result)
+	writeResponseJSON(w, result, http.StatusOK)
 }
 
 func deleteActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
-	id, err := bll.ConvertActorID(ps.ByName("id"))
+	requestID := ps.ByName("id")
+	id, err := bll.ConvertActorID(requestID)
 	if err != nil {
-		http.Error(w, "Error: parameter (id) should be int32", http.StatusBadRequest)
+		msg := fmt.Errorf("Error: parameter (id) should be int32; Id=%v; err (%v)", requestID, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusBadRequest)
 		return
 	}
 	
 	
 	err = bll.DeleteActor(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		msg := fmt.Errorf("Actor with id (%v) does not exist; err (%v)", id, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusNotFound)
+		return
+
 	}
-	w.WriteHeader(http.StatusOK)
+	writeResponseJSON(w, true, http.StatusOK)
 }

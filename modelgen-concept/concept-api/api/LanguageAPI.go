@@ -1,11 +1,14 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/bll"
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
+	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/logger"
+	
+	"github.com/julienschmidt/httprouter"
 )
 
 func configLanguagesRouter(routes *[]route) {
@@ -19,70 +22,88 @@ func configLanguagesRouter(routes *[]route) {
 func getAllLanguages(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	languages, err := bll.GetAllLanguages()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusInternalServerError)
+		return
 	}
-	writeJSON(w, languages)
+	writeResponseJSON(w, languages, http.StatusOK)
 }
 
 func getLanguages(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
-	id, err := bll.ConvertLanguageID(ps.ByName("id"))
+	requestID := ps.ByName("id")
+	id, err := bll.ConvertLanguageID(requestID)
 	if err != nil {
-		http.Error(w, "Error: parameter (id) should be int32", http.StatusBadRequest)
+		msg := fmt.Errorf("Error: parameter (id) should be int32; Id=%v; err (%v)", requestID, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusBadRequest)
 		return
 	}
 	
 
 	language, err := bll.GetLanguage(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		msg := fmt.Errorf("Can’t find language (%v); err (%v)", id, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusNotFound)
 		return
 	}
-	writeJSON(w, language)
+	writeResponseJSON(w, language, http.StatusOK)
 }
 
 func postLanguages(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	language := &dto.LanguageDTO{}
 	if err := readJSON(r, language); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	result, err := bll.CreateLanguage(language)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusInternalServerError)
 		return
 	}
-	writeJSON(w, result)
+	writeResponseJSON(w, result, http.StatusCreated)
 }
 
 func putLanguages(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	language := &dto.LanguageDTO{}
 	if err := readJSON(r, language); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	result, err := bll.UpdateLanguage(language)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
-	writeJSON(w, result)
+	writeResponseJSON(w, result, http.StatusOK)
 }
 
 func deleteLanguages(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
-	id, err := bll.ConvertLanguageID(ps.ByName("id"))
+	requestID := ps.ByName("id")
+	id, err := bll.ConvertLanguageID(requestID)
 	if err != nil {
-		http.Error(w, "Error: parameter (id) should be int32", http.StatusBadRequest)
+		msg := fmt.Errorf("Error: parameter (id) should be int32; Id=%v; err (%v)", requestID, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusBadRequest)
 		return
 	}
 	
 	
 	err = bll.DeleteLanguage(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		msg := fmt.Errorf("Language with id (%v) does not exist; err (%v)", id, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusNotFound)
+		return
+
 	}
-	w.WriteHeader(http.StatusOK)
+	writeResponseJSON(w, true, http.StatusOK)
 }

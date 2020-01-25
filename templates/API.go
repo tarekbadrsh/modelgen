@@ -4,11 +4,14 @@ package templates
 var apiTmpl = `package api
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
 	"{{.Module}}/bll"
 	"{{.Module}}/dto"
+	"{{.Module}}/logger"
+	
+	"github.com/julienschmidt/httprouter"
 )
 
 func config{{pluralize .StructName}}Router(routes *[]route) {
@@ -22,75 +25,93 @@ func config{{pluralize .StructName}}Router(routes *[]route) {
 func getAll{{pluralize .StructName}}(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	{{pluralizeLower .StructName}}, err := bll.GetAll{{pluralize .StructName}}()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusInternalServerError)
+		return
 	}
-	writeJSON(w, {{pluralizeLower .StructName}})
+	writeResponseJSON(w, {{pluralizeLower .StructName}}, http.StatusOK)
 }
 
 func get{{pluralize .StructName}}(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	{{ if (ne .IDType "string")}}
-	id, err := bll.Convert{{.IDName}}(ps.ByName("id"))
+	{{ if (eq .IDType "string")}}	
+	id := ps.ByName("id")
+	{{ else }}
+	requestID := ps.ByName("id")
+	id, err := bll.Convert{{.IDName}}(requestID)
 	if err != nil {
-		http.Error(w, "Error: parameter (id) should be {{.IDType}}", http.StatusBadRequest)
+		msg := fmt.Errorf("Error: parameter (id) should be {{.IDType}}; Id=%v; err (%v)", requestID, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusBadRequest)
 		return
 	}
-	{{ else }}
-	id := ps.ByName("id")
 	{{ end }}
 
 	{{toLower .StructName}}, err := bll.Get{{.StructName}}(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		msg := fmt.Errorf("Can’t find {{toLower .StructName}} (%v); err (%v)", id, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusNotFound)
 		return
 	}
-	writeJSON(w, {{toLower .StructName}})
+	writeResponseJSON(w, {{toLower .StructName}}, http.StatusOK)
 }
 
 func post{{pluralize .StructName}}(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	{{toLower .StructName}} := &dto.{{DTO .StructName}}{}
 	if err := readJSON(r, {{toLower .StructName}}); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	result, err := bll.Create{{.StructName}}({{toLower .StructName}})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusInternalServerError)
 		return
 	}
-	writeJSON(w, result)
+	writeResponseJSON(w, result, http.StatusCreated)
 }
 
 func put{{pluralize .StructName}}(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	{{toLower .StructName}} := &dto.{{DTO .StructName}}{}
 	if err := readJSON(r, {{toLower .StructName}}); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	result, err := bll.Update{{.StructName}}({{toLower .StructName}})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logger.Error(err)
+		writeResponseError(w, err, http.StatusBadRequest)
 		return
 	}
-	writeJSON(w, result)
+	writeResponseJSON(w, result, http.StatusOK)
 }
 
 func delete{{pluralize .StructName}}(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	{{ if (eq .IDType "string")}}	
 	id := ps.ByName("id")
 	{{ else }}
-	id, err := bll.Convert{{.IDName}}(ps.ByName("id"))
+	requestID := ps.ByName("id")
+	id, err := bll.Convert{{.IDName}}(requestID)
 	if err != nil {
-		http.Error(w, "Error: parameter (id) should be {{.IDType}}", http.StatusBadRequest)
+		msg := fmt.Errorf("Error: parameter (id) should be {{.IDType}}; Id=%v; err (%v)", requestID, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusBadRequest)
 		return
 	}
 	{{ end }}
 	
 	err = bll.Delete{{.StructName}}(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		msg := fmt.Errorf("{{.StructName}} with id (%v) does not exist; err (%v)", id, err)
+		logger.Error(msg)
+		writeResponseError(w, msg, http.StatusNotFound)
+		return
+
 	}
-	w.WriteHeader(http.StatusOK)
+	writeResponseJSON(w, true, http.StatusOK)
 }
 `
