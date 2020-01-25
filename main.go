@@ -21,6 +21,7 @@ type config struct {
 	WebAddress         string `json:"API_ADDRESS"`
 	WebPort            int    `json:"API_PORT"`
 	DBImport           string
+	Structlist         map[string]bool
 }
 
 type gen struct {
@@ -60,7 +61,7 @@ func main() {
 		panic(err)
 	}
 
-	apiRouters := map[string]bool{}
+	c.Structlist = map[string]bool{}
 	for _, m := range mutifiles {
 		tm, err := m.tmpfunc()
 		if err != nil {
@@ -77,12 +78,14 @@ func main() {
 				if err != nil {
 					panic(err)
 				}
-				apiRouters[st.StructName] = true
+				c.Structlist[st.StructName] = true
 			}
 		}
 	}
 
 	singlefile := []gen{
+		{filepath: c.TargetDirectory + "/api/router.go", tmpfunc: templates.APIRouterTemplate, data: c},
+
 		{dir: c.TargetDirectory + "/db", filepath: c.TargetDirectory + "/db/database.go", tmpfunc: templates.DBTemplate},
 		{dir: c.TargetDirectory + "/test", filepath: c.TargetDirectory + "/test/test.json", tmpfunc: templates.ConfigjsonTemplate, data: c},
 		{dir: c.TargetDirectory + "/test", filepath: c.TargetDirectory + "/test/config_test.go", tmpfunc: templates.TestConfigTemplate},
@@ -92,7 +95,6 @@ func main() {
 		{dir: c.TargetDirectory + "/logger", filepath: c.TargetDirectory + "/logger/empty.go", tmpfunc: templates.EmptyloggerTemplate},
 		{dir: c.TargetDirectory + "/logger", filepath: c.TargetDirectory + "/logger/zap.go", tmpfunc: templates.ZaploggerTemplate},
 
-		{filepath: c.TargetDirectory + "/api/router.go", tmpfunc: templates.APIRouterTemplate, data: apiRouters},
 		{filepath: c.TargetDirectory + "/config.json", tmpfunc: templates.ConfigjsonTemplate, data: c},
 		{filepath: c.TargetDirectory + "/main.go", tmpfunc: templates.MainTemplate, data: c},
 		{filepath: c.TargetDirectory + "/go.mod", tmpfunc: templates.ModuleTemplate, data: c},

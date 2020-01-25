@@ -40,7 +40,7 @@ func GenerateStruct(module, tableName string, viewName string, cols []*sql.Colum
 	modelInfo.IsTable = tableName != ""
 	modelInfo.IsView = viewName != ""
 	modelInfo.JSONobj = "{"
-	modelInfo.Import = make(map[string]bool)
+	modelInfo.Import = map[string]bool{}
 	for i, col := range cols {
 		field := colToField(col, primarykeys)
 		modelInfo.Fields = append(modelInfo.Fields, field)

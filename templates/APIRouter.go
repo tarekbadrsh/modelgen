@@ -10,7 +10,7 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/logger"
+	"{{.Module}}/logger"
 )
 
 type route struct {
@@ -22,7 +22,7 @@ type route struct {
 // configRouter : configure endpoints in the server.
 func configRouter() *[]route {
 	routes := &[]route{}
-	{{ range $StructName, $value := .}}config{{pluralize $StructName}}Router(routes)
+	{{ range $StructName, $value := .Structlist}}config{{pluralize $StructName}}Router(routes)
 	{{ end }}
 	return routes
 }
