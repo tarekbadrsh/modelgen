@@ -8,12 +8,12 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
 )
 
-func configCustomersRouter(router *httprouter.Router) {
-	router.GET("/customers", getAllCustomers)
-	router.POST("/customers", postCustomers)
-	router.PUT("/customers", putCustomers)
-	router.GET("/customers/:id", getCustomers)
-	router.DELETE("/customers/:id", deleteCustomers)
+func configCustomersRouter(routes *[]route) {
+	*routes = append(*routes, route{method: "GET", path:"/customers", handle: getAllCustomers})
+	*routes = append(*routes, route{method: "POST", path:"/customers", handle: postCustomers})
+	*routes = append(*routes, route{method: "PUT", path:"/customers", handle: putCustomers})
+	*routes = append(*routes, route{method: "GET", path:"/customers/:id", handle: getCustomers})
+	*routes = append(*routes, route{method: "DELETE", path:"/customers/:id", handle: deleteCustomers})
 }
 
 func getAllCustomers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -40,7 +40,6 @@ func getCustomers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	}
 	writeJSON(w, customer)
 }
-
 
 func postCustomers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	customer := &dto.CustomerDTO{}
@@ -72,7 +71,6 @@ func putCustomers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	writeJSON(w, result)
 }
 
-
 func deleteCustomers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	id, err := bll.ConvertCustomerID(ps.ByName("id"))
@@ -81,11 +79,10 @@ func deleteCustomers(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 		return
 	}
 	
-
+	
 	err = bll.DeleteCustomer(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.WriteHeader(http.StatusOK)
 }
-

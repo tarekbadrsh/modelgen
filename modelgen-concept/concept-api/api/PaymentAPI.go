@@ -8,12 +8,12 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
 )
 
-func configPaymentsRouter(router *httprouter.Router) {
-	router.GET("/payments", getAllPayments)
-	router.POST("/payments", postPayments)
-	router.PUT("/payments", putPayments)
-	router.GET("/payments/:id", getPayments)
-	router.DELETE("/payments/:id", deletePayments)
+func configPaymentsRouter(routes *[]route) {
+	*routes = append(*routes, route{method: "GET", path:"/payments", handle: getAllPayments})
+	*routes = append(*routes, route{method: "POST", path:"/payments", handle: postPayments})
+	*routes = append(*routes, route{method: "PUT", path:"/payments", handle: putPayments})
+	*routes = append(*routes, route{method: "GET", path:"/payments/:id", handle: getPayments})
+	*routes = append(*routes, route{method: "DELETE", path:"/payments/:id", handle: deletePayments})
 }
 
 func getAllPayments(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -40,7 +40,6 @@ func getPayments(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	}
 	writeJSON(w, payment)
 }
-
 
 func postPayments(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	payment := &dto.PaymentDTO{}
@@ -72,7 +71,6 @@ func putPayments(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	writeJSON(w, result)
 }
 
-
 func deletePayments(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	id, err := bll.ConvertPaymentID(ps.ByName("id"))
@@ -81,11 +79,10 @@ func deletePayments(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 		return
 	}
 	
-
+	
 	err = bll.DeletePayment(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.WriteHeader(http.StatusOK)
 }
-

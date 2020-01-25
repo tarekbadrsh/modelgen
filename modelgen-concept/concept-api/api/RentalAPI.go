@@ -8,12 +8,12 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
 )
 
-func configRentalsRouter(router *httprouter.Router) {
-	router.GET("/rentals", getAllRentals)
-	router.POST("/rentals", postRentals)
-	router.PUT("/rentals", putRentals)
-	router.GET("/rentals/:id", getRentals)
-	router.DELETE("/rentals/:id", deleteRentals)
+func configRentalsRouter(routes *[]route) {
+	*routes = append(*routes, route{method: "GET", path:"/rentals", handle: getAllRentals})
+	*routes = append(*routes, route{method: "POST", path:"/rentals", handle: postRentals})
+	*routes = append(*routes, route{method: "PUT", path:"/rentals", handle: putRentals})
+	*routes = append(*routes, route{method: "GET", path:"/rentals/:id", handle: getRentals})
+	*routes = append(*routes, route{method: "DELETE", path:"/rentals/:id", handle: deleteRentals})
 }
 
 func getAllRentals(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -40,7 +40,6 @@ func getRentals(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	}
 	writeJSON(w, rental)
 }
-
 
 func postRentals(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	rental := &dto.RentalDTO{}
@@ -72,7 +71,6 @@ func putRentals(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	writeJSON(w, result)
 }
 
-
 func deleteRentals(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	id, err := bll.ConvertRentalID(ps.ByName("id"))
@@ -81,11 +79,10 @@ func deleteRentals(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 		return
 	}
 	
-
+	
 	err = bll.DeleteRental(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.WriteHeader(http.StatusOK)
 }
-

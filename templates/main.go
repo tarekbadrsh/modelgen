@@ -36,11 +36,11 @@ func main() {
 	defer db.Close()
 	/* initialize database end */
 
-	// webserver.
-	r := api.ConfigRouter()
+	/* initialize webserver start */
+	r := api.NewRouter()
 	addr := fmt.Sprintf("%v:%d", c.WebAddress, c.WebPort)
 	log.Fatal(http.ListenAndServe(addr, r))
-	// webserver.
+	/* initialize webserver end */
 }
 
 `

@@ -8,12 +8,12 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
 )
 
-func configStoresRouter(router *httprouter.Router) {
-	router.GET("/stores", getAllStores)
-	router.POST("/stores", postStores)
-	router.PUT("/stores", putStores)
-	router.GET("/stores/:id", getStores)
-	router.DELETE("/stores/:id", deleteStores)
+func configStoresRouter(routes *[]route) {
+	*routes = append(*routes, route{method: "GET", path:"/stores", handle: getAllStores})
+	*routes = append(*routes, route{method: "POST", path:"/stores", handle: postStores})
+	*routes = append(*routes, route{method: "PUT", path:"/stores", handle: putStores})
+	*routes = append(*routes, route{method: "GET", path:"/stores/:id", handle: getStores})
+	*routes = append(*routes, route{method: "DELETE", path:"/stores/:id", handle: deleteStores})
 }
 
 func getAllStores(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -40,7 +40,6 @@ func getStores(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	}
 	writeJSON(w, store)
 }
-
 
 func postStores(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	store := &dto.StoreDTO{}
@@ -72,7 +71,6 @@ func putStores(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	writeJSON(w, result)
 }
 
-
 func deleteStores(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	id, err := bll.ConvertStoreID(ps.ByName("id"))
@@ -81,11 +79,10 @@ func deleteStores(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 		return
 	}
 	
-
+	
 	err = bll.DeleteStore(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.WriteHeader(http.StatusOK)
 }
-

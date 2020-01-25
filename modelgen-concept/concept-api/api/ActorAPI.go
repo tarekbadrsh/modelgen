@@ -8,12 +8,12 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
 )
 
-func configActorsRouter(router *httprouter.Router) {
-	router.GET("/actors", getAllActors)
-	router.POST("/actors", postActors)
-	router.PUT("/actors", putActors)
-	router.GET("/actors/:id", getActors)
-	router.DELETE("/actors/:id", deleteActors)
+func configActorsRouter(routes *[]route) {
+	*routes = append(*routes, route{method: "GET", path:"/actors", handle: getAllActors})
+	*routes = append(*routes, route{method: "POST", path:"/actors", handle: postActors})
+	*routes = append(*routes, route{method: "PUT", path:"/actors", handle: putActors})
+	*routes = append(*routes, route{method: "GET", path:"/actors/:id", handle: getActors})
+	*routes = append(*routes, route{method: "DELETE", path:"/actors/:id", handle: deleteActors})
 }
 
 func getAllActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -25,12 +25,13 @@ func getAllActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 }
 
 func getActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-
+	
 	id, err := bll.ConvertActorID(ps.ByName("id"))
 	if err != nil {
 		http.Error(w, "Error: parameter (id) should be int32", http.StatusBadRequest)
 		return
 	}
+	
 
 	actor, err := bll.GetActor(id)
 	if err != nil {
@@ -71,13 +72,14 @@ func putActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 
 func deleteActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-
+	
 	id, err := bll.ConvertActorID(ps.ByName("id"))
 	if err != nil {
 		http.Error(w, "Error: parameter (id) should be int32", http.StatusBadRequest)
 		return
 	}
-
+	
+	
 	err = bll.DeleteActor(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

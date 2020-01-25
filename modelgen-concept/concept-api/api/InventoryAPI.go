@@ -8,12 +8,12 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
 )
 
-func configInventoriesRouter(router *httprouter.Router) {
-	router.GET("/inventories", getAllInventories)
-	router.POST("/inventories", postInventories)
-	router.PUT("/inventories", putInventories)
-	router.GET("/inventories/:id", getInventories)
-	router.DELETE("/inventories/:id", deleteInventories)
+func configInventoriesRouter(routes *[]route) {
+	*routes = append(*routes, route{method: "GET", path:"/inventories", handle: getAllInventories})
+	*routes = append(*routes, route{method: "POST", path:"/inventories", handle: postInventories})
+	*routes = append(*routes, route{method: "PUT", path:"/inventories", handle: putInventories})
+	*routes = append(*routes, route{method: "GET", path:"/inventories/:id", handle: getInventories})
+	*routes = append(*routes, route{method: "DELETE", path:"/inventories/:id", handle: deleteInventories})
 }
 
 func getAllInventories(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -40,7 +40,6 @@ func getInventories(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 	}
 	writeJSON(w, inventory)
 }
-
 
 func postInventories(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	inventory := &dto.InventoryDTO{}
@@ -72,7 +71,6 @@ func putInventories(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 	writeJSON(w, result)
 }
 
-
 func deleteInventories(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	id, err := bll.ConvertInventoryID(ps.ByName("id"))
@@ -81,11 +79,10 @@ func deleteInventories(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		return
 	}
 	
-
+	
 	err = bll.DeleteInventory(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.WriteHeader(http.StatusOK)
 }
-

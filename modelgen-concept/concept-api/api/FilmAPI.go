@@ -8,12 +8,12 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
 )
 
-func configFilmsRouter(router *httprouter.Router) {
-	router.GET("/films", getAllFilms)
-	router.POST("/films", postFilms)
-	router.PUT("/films", putFilms)
-	router.GET("/films/:id", getFilms)
-	router.DELETE("/films/:id", deleteFilms)
+func configFilmsRouter(routes *[]route) {
+	*routes = append(*routes, route{method: "GET", path:"/films", handle: getAllFilms})
+	*routes = append(*routes, route{method: "POST", path:"/films", handle: postFilms})
+	*routes = append(*routes, route{method: "PUT", path:"/films", handle: putFilms})
+	*routes = append(*routes, route{method: "GET", path:"/films/:id", handle: getFilms})
+	*routes = append(*routes, route{method: "DELETE", path:"/films/:id", handle: deleteFilms})
 }
 
 func getAllFilms(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -40,7 +40,6 @@ func getFilms(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	}
 	writeJSON(w, film)
 }
-
 
 func postFilms(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	film := &dto.FilmDTO{}
@@ -72,7 +71,6 @@ func putFilms(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	writeJSON(w, result)
 }
 
-
 func deleteFilms(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	id, err := bll.ConvertFilmID(ps.ByName("id"))
@@ -81,11 +79,10 @@ func deleteFilms(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		return
 	}
 	
-
+	
 	err = bll.DeleteFilm(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.WriteHeader(http.StatusOK)
 }
-

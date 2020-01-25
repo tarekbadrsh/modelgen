@@ -8,12 +8,12 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
 )
 
-func configAddressesRouter(router *httprouter.Router) {
-	router.GET("/addresses", getAllAddresses)
-	router.POST("/addresses", postAddresses)
-	router.PUT("/addresses", putAddresses)
-	router.GET("/addresses/:id", getAddresses)
-	router.DELETE("/addresses/:id", deleteAddresses)
+func configAddressesRouter(routes *[]route) {
+	*routes = append(*routes, route{method: "GET", path:"/addresses", handle: getAllAddresses})
+	*routes = append(*routes, route{method: "POST", path:"/addresses", handle: postAddresses})
+	*routes = append(*routes, route{method: "PUT", path:"/addresses", handle: putAddresses})
+	*routes = append(*routes, route{method: "GET", path:"/addresses/:id", handle: getAddresses})
+	*routes = append(*routes, route{method: "DELETE", path:"/addresses/:id", handle: deleteAddresses})
 }
 
 func getAllAddresses(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -40,7 +40,6 @@ func getAddresses(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	}
 	writeJSON(w, address)
 }
-
 
 func postAddresses(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	address := &dto.AddressDTO{}
@@ -72,7 +71,6 @@ func putAddresses(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	writeJSON(w, result)
 }
 
-
 func deleteAddresses(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	id, err := bll.ConvertAddressID(ps.ByName("id"))
@@ -81,11 +79,10 @@ func deleteAddresses(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 		return
 	}
 	
-
+	
 	err = bll.DeleteAddress(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.WriteHeader(http.StatusOK)
 }
-

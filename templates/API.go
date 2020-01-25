@@ -11,12 +11,12 @@ import (
 	"{{.Module}}/dto"
 )
 
-func config{{pluralize .StructName}}Router(router *httprouter.Router) {
-	router.GET("/{{pluralizeLower .StructName}}", getAll{{pluralize .StructName}})
-	router.POST("/{{pluralizeLower .StructName}}", post{{pluralize .StructName}})
-	router.PUT("/{{pluralizeLower .StructName}}", put{{pluralize .StructName}})
-	router.GET("/{{pluralizeLower .StructName}}/:id", get{{pluralize .StructName}})
-	router.DELETE("/{{pluralizeLower .StructName}}/:id", delete{{pluralize .StructName}})
+func config{{pluralize .StructName}}Router(routes *[]route) {
+	*routes = append(*routes, route{method: "GET", path:"/{{pluralizeLower .StructName}}", handle: getAll{{pluralize .StructName}}})
+	*routes = append(*routes, route{method: "POST", path:"/{{pluralizeLower .StructName}}", handle: post{{pluralize .StructName}}})
+	*routes = append(*routes, route{method: "PUT", path:"/{{pluralizeLower .StructName}}", handle: put{{pluralize .StructName}}})
+	*routes = append(*routes, route{method: "GET", path:"/{{pluralizeLower .StructName}}/:id", handle: get{{pluralize .StructName}}})
+	*routes = append(*routes, route{method: "DELETE", path:"/{{pluralizeLower .StructName}}/:id", handle: delete{{pluralize .StructName}}})
 }
 
 func getAll{{pluralize .StructName}}(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -45,7 +45,6 @@ func get{{pluralize .StructName}}(w http.ResponseWriter, r *http.Request, ps htt
 	}
 	writeJSON(w, {{toLower .StructName}})
 }
-
 
 func post{{pluralize .StructName}}(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	{{toLower .StructName}} := &dto.{{DTO .StructName}}{}
@@ -77,7 +76,6 @@ func put{{pluralize .StructName}}(w http.ResponseWriter, r *http.Request, ps htt
 	writeJSON(w, result)
 }
 
-
 func delete{{pluralize .StructName}}(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	{{ if (eq .IDType "string")}}	
 	id := ps.ByName("id")
@@ -88,12 +86,11 @@ func delete{{pluralize .StructName}}(w http.ResponseWriter, r *http.Request, ps 
 		return
 	}
 	{{ end }}
-
+	
 	err = bll.Delete{{.StructName}}(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.WriteHeader(http.StatusOK)
 }
-
 `

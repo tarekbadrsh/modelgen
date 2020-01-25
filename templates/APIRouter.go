@@ -12,13 +12,28 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/logger"
 )
 
-// ConfigRouter : configure endpoints in the server.
-func ConfigRouter() http.Handler {
-	router := httprouter.New()
+type route struct {
+	method string            //HTTP method
+	path   string            //url endpoint
+	handle httprouter.Handle //Controller function which dispatches the right HTML page and/or data for each route
+}
 
-	{{ range $StructName, $value := .}}config{{pluralize $StructName}}Router(router)
+// configRouter : configure endpoints in the server.
+func configRouter() *[]route {
+	routes := &[]route{}
+	{{ range $StructName, $value := .}}config{{pluralize $StructName}}Router(routes)
 	{{ end }}
+	return routes
+}
 
+// NewRouter :creates a new router instance and iterate through all the Routes to get each’s
+// Route’s Method, Pattern and Handle and registers a new request handle.
+func NewRouter() http.Handler {
+	routes := configRouter()
+	router := httprouter.New()
+	for _, route := range *routes {
+		router.Handle(route.method, route.path, logmid(route.handle))
+	}
 	return router
 }
 

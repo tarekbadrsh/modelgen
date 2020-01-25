@@ -8,12 +8,12 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
 )
 
-func configCitiesRouter(router *httprouter.Router) {
-	router.GET("/cities", getAllCities)
-	router.POST("/cities", postCities)
-	router.PUT("/cities", putCities)
-	router.GET("/cities/:id", getCities)
-	router.DELETE("/cities/:id", deleteCities)
+func configCitiesRouter(routes *[]route) {
+	*routes = append(*routes, route{method: "GET", path:"/cities", handle: getAllCities})
+	*routes = append(*routes, route{method: "POST", path:"/cities", handle: postCities})
+	*routes = append(*routes, route{method: "PUT", path:"/cities", handle: putCities})
+	*routes = append(*routes, route{method: "GET", path:"/cities/:id", handle: getCities})
+	*routes = append(*routes, route{method: "DELETE", path:"/cities/:id", handle: deleteCities})
 }
 
 func getAllCities(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -40,7 +40,6 @@ func getCities(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	}
 	writeJSON(w, city)
 }
-
 
 func postCities(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	city := &dto.CityDTO{}
@@ -72,7 +71,6 @@ func putCities(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	writeJSON(w, result)
 }
 
-
 func deleteCities(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	id, err := bll.ConvertCityID(ps.ByName("id"))
@@ -81,11 +79,10 @@ func deleteCities(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 		return
 	}
 	
-
+	
 	err = bll.DeleteCity(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.WriteHeader(http.StatusOK)
 }
-

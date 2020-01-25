@@ -9,25 +9,40 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/logger"
 )
 
-// ConfigRouter : configure endpoints in the server.
-func ConfigRouter() http.Handler {
-	router := httprouter.New()
+type route struct {
+	method string            //HTTP method
+	path   string            //url endpoint
+	handle httprouter.Handle //Controller function which dispatches the right HTML page and/or data for each route
+}
 
-	configActorsRouter(router)
-	configAddressesRouter(router)
-	configCategoriesRouter(router)
-	configCitiesRouter(router)
-	configCountriesRouter(router)
-	configCustomersRouter(router)
-	configFilmsRouter(router)
-	configInventoriesRouter(router)
-	configLanguagesRouter(router)
-	configPaymentsRouter(router)
-	configRentalsRouter(router)
-	configStaffsRouter(router)
-	configStoresRouter(router)
+// configRouter : configure endpoints in the server.
+func configRouter() *[]route {
+	routes := &[]route{}
+	configActorsRouter(routes)
+	configAddressesRouter(routes)
+	configCategoriesRouter(routes)
+	configCitiesRouter(routes)
+	configCountriesRouter(routes)
+	configCustomersRouter(routes)
+	configFilmsRouter(routes)
+	configInventoriesRouter(routes)
+	configLanguagesRouter(routes)
+	configPaymentsRouter(routes)
+	configRentalsRouter(routes)
+	configStaffsRouter(routes)
+	configStoresRouter(routes)
 	
+	return routes
+}
 
+// NewRouter :creates a new router instance and iterate through all the Routes to get each’s
+// Route’s Method, Pattern and Handle and registers a new request handle.
+func NewRouter() http.Handler {
+	routes := configRouter()
+	router := httprouter.New()
+	for _, route := range *routes {
+		router.Handle(route.method, route.path, logmid(route.handle))
+	}
 	return router
 }
 

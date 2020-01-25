@@ -8,12 +8,12 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
 )
 
-func configCountriesRouter(router *httprouter.Router) {
-	router.GET("/countries", getAllCountries)
-	router.POST("/countries", postCountries)
-	router.PUT("/countries", putCountries)
-	router.GET("/countries/:id", getCountries)
-	router.DELETE("/countries/:id", deleteCountries)
+func configCountriesRouter(routes *[]route) {
+	*routes = append(*routes, route{method: "GET", path:"/countries", handle: getAllCountries})
+	*routes = append(*routes, route{method: "POST", path:"/countries", handle: postCountries})
+	*routes = append(*routes, route{method: "PUT", path:"/countries", handle: putCountries})
+	*routes = append(*routes, route{method: "GET", path:"/countries/:id", handle: getCountries})
+	*routes = append(*routes, route{method: "DELETE", path:"/countries/:id", handle: deleteCountries})
 }
 
 func getAllCountries(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -40,7 +40,6 @@ func getCountries(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	}
 	writeJSON(w, country)
 }
-
 
 func postCountries(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	country := &dto.CountryDTO{}
@@ -72,7 +71,6 @@ func putCountries(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	writeJSON(w, result)
 }
 
-
 func deleteCountries(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	id, err := bll.ConvertCountryID(ps.ByName("id"))
@@ -81,11 +79,10 @@ func deleteCountries(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 		return
 	}
 	
-
+	
 	err = bll.DeleteCountry(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.WriteHeader(http.StatusOK)
 }
-

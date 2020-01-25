@@ -8,12 +8,12 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
 )
 
-func configLanguagesRouter(router *httprouter.Router) {
-	router.GET("/languages", getAllLanguages)
-	router.POST("/languages", postLanguages)
-	router.PUT("/languages", putLanguages)
-	router.GET("/languages/:id", getLanguages)
-	router.DELETE("/languages/:id", deleteLanguages)
+func configLanguagesRouter(routes *[]route) {
+	*routes = append(*routes, route{method: "GET", path:"/languages", handle: getAllLanguages})
+	*routes = append(*routes, route{method: "POST", path:"/languages", handle: postLanguages})
+	*routes = append(*routes, route{method: "PUT", path:"/languages", handle: putLanguages})
+	*routes = append(*routes, route{method: "GET", path:"/languages/:id", handle: getLanguages})
+	*routes = append(*routes, route{method: "DELETE", path:"/languages/:id", handle: deleteLanguages})
 }
 
 func getAllLanguages(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -40,7 +40,6 @@ func getLanguages(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	}
 	writeJSON(w, language)
 }
-
 
 func postLanguages(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	language := &dto.LanguageDTO{}
@@ -72,7 +71,6 @@ func putLanguages(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	writeJSON(w, result)
 }
 
-
 func deleteLanguages(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	id, err := bll.ConvertLanguageID(ps.ByName("id"))
@@ -81,11 +79,10 @@ func deleteLanguages(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 		return
 	}
 	
-
+	
 	err = bll.DeleteLanguage(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.WriteHeader(http.StatusOK)
 }
-

@@ -8,12 +8,12 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/dto"
 )
 
-func configStaffsRouter(router *httprouter.Router) {
-	router.GET("/staffs", getAllStaffs)
-	router.POST("/staffs", postStaffs)
-	router.PUT("/staffs", putStaffs)
-	router.GET("/staffs/:id", getStaffs)
-	router.DELETE("/staffs/:id", deleteStaffs)
+func configStaffsRouter(routes *[]route) {
+	*routes = append(*routes, route{method: "GET", path:"/staffs", handle: getAllStaffs})
+	*routes = append(*routes, route{method: "POST", path:"/staffs", handle: postStaffs})
+	*routes = append(*routes, route{method: "PUT", path:"/staffs", handle: putStaffs})
+	*routes = append(*routes, route{method: "GET", path:"/staffs/:id", handle: getStaffs})
+	*routes = append(*routes, route{method: "DELETE", path:"/staffs/:id", handle: deleteStaffs})
 }
 
 func getAllStaffs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -40,7 +40,6 @@ func getStaffs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	}
 	writeJSON(w, staff)
 }
-
 
 func postStaffs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	staff := &dto.StaffDTO{}
@@ -72,7 +71,6 @@ func putStaffs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	writeJSON(w, result)
 }
 
-
 func deleteStaffs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	
 	id, err := bll.ConvertStaffID(ps.ByName("id"))
@@ -81,11 +79,10 @@ func deleteStaffs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 		return
 	}
 	
-
+	
 	err = bll.DeleteStaff(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.WriteHeader(http.StatusOK)
 }
-
