@@ -13,7 +13,7 @@ build:
 	- go build .
 	- ./modelgen
 
-### * make run								run web-api (concept) binary 
+### * make run								run concept-api (concept) binary 
 run: build
-	- cd modelgen-concept/web-api && go build .
-	- cd modelgen-concept/web-api && ./web-api
+	- cd modelgen-concept/concept-api && go build .
+	- cd modelgen-concept/concept-api && ./concept-api

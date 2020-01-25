@@ -15,10 +15,10 @@ import (
 type config struct {
 	AppName            string
 	Module             string
-	DBConnectionString string
-	DBEngine           string
-	WebAddress         string
-	WebPort            int
+	DBConnectionString string `json:"DB_CONNECTION_STRING" envconfig:"DB_CONNECTION_STRING"`
+	DBEngine           string `json:"DB_ENGINE" envconfig:"DB_ENGINE"`
+	WebAddress         string `json:"API_ADDRESS" envconfig:"API_ADDRESS"`
+	WebPort            int    `json:"API_PORT" envconfig:"API_PORT"`
 	DBImport           string
 }
 
@@ -85,6 +85,7 @@ func main() {
 		{dir: c.AppName + "/db", filepath: c.AppName + "/db/database.go", tmpfunc: templates.DBTemplate},
 		{dir: c.AppName + "/test", filepath: c.AppName + "/test/test.json", tmpfunc: templates.ConfigjsonTemplate, data: c},
 		{dir: c.AppName + "/test", filepath: c.AppName + "/test/config_test.go", tmpfunc: templates.TestConfigTemplate},
+		{dir: c.AppName + "/config", filepath: c.AppName + "/config/config.go", tmpfunc: templates.ConfigTemplate},
 
 		{filepath: c.AppName + "/api/router.go", tmpfunc: templates.APIRouterTemplate, data: apiRouters},
 		{filepath: c.AppName + "/config.json", tmpfunc: templates.ConfigjsonTemplate, data: c},

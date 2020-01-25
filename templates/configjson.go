@@ -2,9 +2,9 @@ package templates
 
 // configjsonTmpl : template of config json file
 var configjsonTmpl = `{
-    "DBConnectionString"    :   "{{.DBConnectionString}}",
-    "DBEngine"              :   "{{.DBEngine}}",
-    "WebAddress"            :   "{{.WebAddress}}",
-    "WebPort"               :   {{.WebPort}}
+    "DB_CONNECTION_STRING"      :   "{{.DBConnectionString}}",
+    "DB_ENGINE"                 :   "{{.DBEngine}}",
+    "API_ADDRESS"               :   "{{.WebAddress}}",
+    "API_PORT"                  :   {{.WebPort}}
 }
 `

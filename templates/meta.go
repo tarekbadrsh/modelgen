@@ -43,6 +43,11 @@ func ConfigjsonTemplate() (*template.Template, error) {
 	return getTemplate(configjsonTmpl)
 }
 
+// ConfigTemplate : return template of Config.
+func ConfigTemplate() (*template.Template, error) {
+	return getTemplate(configTmpl)
+}
+
 // MainTemplate : return template of Main.
 func MainTemplate() (*template.Template, error) {
 	return getTemplate(mainTmpl)
@@ -76,6 +81,7 @@ func getTemplate(temp string) (*template.Template, error) {
 		"toLower":        strings.ToLower,
 		"DTO":            structNameDTO,
 		"DAL":            structNameDAL,
+		"backQuote":      backQuote,
 	}
 
 	tmpl, err := template.New("model").Funcs(funcMap).Parse(temp)
@@ -96,4 +102,8 @@ func structNameDTO(s string) string {
 
 func structNameDAL(s string) string {
 	return fmt.Sprintf("%vDAL", s)
+}
+
+func backQuote() string {
+	return fmt.Sprint("`")
 }
