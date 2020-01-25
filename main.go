@@ -88,6 +88,10 @@ func main() {
 		{dir: c.TargetDirectory + "/test", filepath: c.TargetDirectory + "/test/config_test.go", tmpfunc: templates.TestConfigTemplate},
 		{dir: c.TargetDirectory + "/config", filepath: c.TargetDirectory + "/config/config.go", tmpfunc: templates.ConfigTemplate},
 
+		{dir: c.TargetDirectory + "/logger", filepath: c.TargetDirectory + "/logger/logger.go", tmpfunc: templates.IloggerTemplate},
+		{dir: c.TargetDirectory + "/logger", filepath: c.TargetDirectory + "/logger/empty.go", tmpfunc: templates.EmptyloggerTemplate},
+		{dir: c.TargetDirectory + "/logger", filepath: c.TargetDirectory + "/logger/zap.go", tmpfunc: templates.ZaploggerTemplate},
+
 		{filepath: c.TargetDirectory + "/api/router.go", tmpfunc: templates.APIRouterTemplate, data: apiRouters},
 		{filepath: c.TargetDirectory + "/config.json", tmpfunc: templates.ConfigjsonTemplate, data: c},
 		{filepath: c.TargetDirectory + "/main.go", tmpfunc: templates.MainTemplate, data: c},

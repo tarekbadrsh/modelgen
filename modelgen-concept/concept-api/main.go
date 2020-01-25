@@ -9,6 +9,7 @@ import (
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/api"
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/config"
 	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/db"
+	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/logger"
 )
 
 func main() {
@@ -19,12 +20,18 @@ func main() {
 	}
 	/* configuration initialize end */
 
-	// database.
+	/* logger initialize start */
+	mylogger := logger.NewZapLogger()
+	logger.InitLogger(&mylogger)
+	defer logger.Close()
+	/* logger initialize end */
+
+	/* initialize database start */
 	if err := db.InitDB(c.DBEngine, c.DBConnectionString); err != nil {
 		panic(err)
 	}
 	defer db.Close()
-	// database.
+	/* initialize database end */
 
 	// webserver.
 	r := api.ConfigRouter()

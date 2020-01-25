@@ -9,14 +9,16 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api/logger"
 )
 
 // ConfigRouter : configure endpoints in the server.
 func ConfigRouter() http.Handler {
-	router := httprouter.New() 
-	
+	router := httprouter.New()
+
 	{{ range $StructName, $value := .}}config{{pluralize $StructName}}Router(router)
 	{{ end }}
+
 	return router
 }
 
@@ -39,4 +41,11 @@ func readJSON(r *http.Request, v interface{}) error {
 	return json.Unmarshal(buf, v)
 }
 
+// logmid : logging midleware
+func logmid(next httprouter.Handle) httprouter.Handle {
+	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+		logger.Infof("[%s] on: %s", r.Method, r.URL)
+		next(w, r, ps)
+	}
+}
 `

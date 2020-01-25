@@ -12,6 +12,7 @@ import (
 	"{{.Module}}/api"
 	"{{.Module}}/config"
 	"{{.Module}}/db"
+	"{{.Module}}/logger"
 )
 
 func main() {
@@ -22,12 +23,18 @@ func main() {
 	}
 	/* configuration initialize end */
 
-	// database.
+	/* logger initialize start */
+	mylogger := logger.NewZapLogger()
+	logger.InitLogger(&mylogger)
+	defer logger.Close()
+	/* logger initialize end */
+
+	/* initialize database start */
 	if err := db.InitDB(c.DBEngine, c.DBConnectionString); err != nil {
 		panic(err)
 	}
 	defer db.Close()
-	// database.
+	/* initialize database end */
 
 	// webserver.
 	r := api.ConfigRouter()

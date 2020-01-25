@@ -25,13 +25,12 @@ func getAllActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 }
 
 func getActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
+
 	id, err := bll.ConvertActorID(ps.ByName("id"))
 	if err != nil {
 		http.Error(w, "Error: parameter (id) should be int32", http.StatusBadRequest)
 		return
 	}
-	
 
 	actor, err := bll.GetActor(id)
 	if err != nil {
@@ -40,7 +39,6 @@ func getActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	}
 	writeJSON(w, actor)
 }
-
 
 func postActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	actor := &dto.ActorDTO{}
@@ -72,15 +70,13 @@ func putActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	writeJSON(w, result)
 }
 
-
 func deleteActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
+
 	id, err := bll.ConvertActorID(ps.ByName("id"))
 	if err != nil {
 		http.Error(w, "Error: parameter (id) should be int32", http.StatusBadRequest)
 		return
 	}
-	
 
 	err = bll.DeleteActor(id)
 	if err != nil {
@@ -88,4 +84,3 @@ func deleteActors(w http.ResponseWriter, r *http.Request, ps httprouter.Params) 
 	}
 	w.WriteHeader(http.StatusOK)
 }
-

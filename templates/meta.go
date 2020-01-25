@@ -6,6 +6,7 @@ import (
 	"text/template"
 
 	"github.com/jinzhu/inflection"
+	"github.com/tarekbadrshalaan/modelgen/templates/logger"
 )
 
 // DALTemplate : return template of DAL.
@@ -46,6 +47,21 @@ func ConfigjsonTemplate() (*template.Template, error) {
 // ConfigTemplate : return template of Config.
 func ConfigTemplate() (*template.Template, error) {
 	return getTemplate(configTmpl)
+}
+
+// IloggerTemplate : return template of Ilogger.
+func IloggerTemplate() (*template.Template, error) {
+	return getTemplate(logger.ILoggerTmpl)
+}
+
+// EmptyloggerTemplate : return template of EmptyLogger.
+func EmptyloggerTemplate() (*template.Template, error) {
+	return getTemplate(logger.EmptyLoggerTmpl)
+}
+
+// ZaploggerTemplate : return template of ZapLogger.
+func ZaploggerTemplate() (*template.Template, error) {
+	return getTemplate(logger.ZapLoggerTmpl)
 }
 
 // MainTemplate : return template of Main.
