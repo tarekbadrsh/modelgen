@@ -3,7 +3,7 @@ package dal
 import ( 
 	"time"
 	
-	"github.com/tarekbadrshalaan/modelgen/web-api/db"
+	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/web-api/db"
 )  
 
 // PaymentDAL : data access layer  (payment) table.

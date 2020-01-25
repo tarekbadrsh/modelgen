@@ -83,12 +83,14 @@ func main() {
 
 	singlefile := []gen{
 		{dir: c.AppName + "/db", filepath: c.AppName + "/db/database.go", tmpfunc: templates.DBTemplate},
-		{dir: "", filepath: c.AppName + "/api/router.go", tmpfunc: templates.APIRouterTemplate, data: apiRouters},
-		{dir: "", filepath: c.AppName + "/config.json", tmpfunc: templates.ConfigTemplate, data: c},
-		{dir: c.AppName + "/test", filepath: c.AppName + "/test/test.json", tmpfunc: templates.ConfigTemplate, data: c},
+		{dir: c.AppName + "/test", filepath: c.AppName + "/test/test.json", tmpfunc: templates.ConfigjsonTemplate, data: c},
 		{dir: c.AppName + "/test", filepath: c.AppName + "/test/config_test.go", tmpfunc: templates.TestConfigTemplate},
-		{dir: "", filepath: c.AppName + "/main.go", tmpfunc: templates.MainTemplate, data: c},
-		{dir: "", filepath: c.AppName + "/go.mod", tmpfunc: templates.ModuleTemplate, data: c},
+
+		{filepath: c.AppName + "/api/router.go", tmpfunc: templates.APIRouterTemplate, data: apiRouters},
+		{filepath: c.AppName + "/config.json", tmpfunc: templates.ConfigjsonTemplate, data: c},
+		{filepath: c.AppName + "/main.go", tmpfunc: templates.MainTemplate, data: c},
+		{filepath: c.AppName + "/go.mod", tmpfunc: templates.ModuleTemplate, data: c},
+		{filepath: c.AppName + "/Dockerfile", tmpfunc: templates.DockerTemplate, data: c},
 	}
 	for _, s := range singlefile {
 		tm, err := s.tmpfunc()

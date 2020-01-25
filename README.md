@@ -16,6 +16,7 @@ The Generated Application inculeds :-
 
 - Go mod
 - Configeration file
+- Dockerfile
 - DAL,BLL,DTO,API and API_Tests for every Database Table 
 - Compatalbe with `mysql` `postgres` `mssql` `sqlite` `oracle`
 - Using [![GORM](https://github.com/jinzhu/gorm)](https://github.com/jinzhu/gorm) as ORM
@@ -66,6 +67,7 @@ $ cd Application/
     ├──> config.json
     ├──> go.mod 
     ├──> main.go
+    ├──> Dockerfile
     db
     │	├──> database.go
     api
@@ -89,8 +91,8 @@ $ cd Application/
 ```
 
 
-## standar
-- in [![standar](https://github.com/tarekbadrshalaan/modelgen/tree/master/standar)](https://github.com/tarekbadrshalaan/modelgen/tree/master/standar) you can find the expected result of the generator. 
+## Concept
+- in [![standar](https://github.com/tarekbadrshalaan/modelgen/tree/master/modelgen-concept/web-api)](https://github.com/tarekbadrshalaan/modelgen/tree/master/modelgen-concept/web-api) you can find the expected result of the generator. 
 
 ## Contributing
 

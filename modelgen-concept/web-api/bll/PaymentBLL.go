@@ -3,8 +3,8 @@ package bll
 import (
 	"strconv"
 
-	"github.com/tarekbadrshalaan/modelgen/web-api/dal"
-	"github.com/tarekbadrshalaan/modelgen/web-api/dto"
+	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/web-api/dal"
+	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/web-api/dto"
 )
 
 

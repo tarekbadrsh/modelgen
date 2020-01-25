@@ -7,8 +7,8 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/tarekbadrshalaan/goStuff/configuration"
-	"github.com/tarekbadrshalaan/modelgen/web-api/api"
-	"github.com/tarekbadrshalaan/modelgen/web-api/db"
+	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/web-api/api"
+	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/web-api/db"
 )
 
 type config struct {

@@ -38,14 +38,19 @@ func DBTemplate() (*template.Template, error) {
 	return getTemplate(dbTmpl)
 }
 
-// ConfigTemplate : return template of Config.
-func ConfigTemplate() (*template.Template, error) {
-	return getTemplate(configTmpl)
+// ConfigjsonTemplate : return template of Config json file.
+func ConfigjsonTemplate() (*template.Template, error) {
+	return getTemplate(configjsonTmpl)
 }
 
 // MainTemplate : return template of Main.
 func MainTemplate() (*template.Template, error) {
 	return getTemplate(mainTmpl)
+}
+
+// DockerTemplate : return template of Dockerfile.
+func DockerTemplate() (*template.Template, error) {
+	return getTemplate(dockerTmpl)
 }
 
 // ModuleTemplate : return template of go.mod.

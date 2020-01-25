@@ -2,7 +2,7 @@ package dto
 import ( 
 	"time"
 	
-	"github.com/tarekbadrshalaan/modelgen/web-api/dal"
+	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/web-api/dal"
 )  
 
 // CountryDTO : data transfer object  (country) table.

@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/tarekbadrshalaan/modelgen/web-api/bll"
-	"github.com/tarekbadrshalaan/modelgen/web-api/dto"
+	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/web-api/bll"
+	"github.com/tarekbadrshalaan/modelgen/modelgen-concept/web-api/dto"
 )
 
 func configRentalsRouter(router *httprouter.Router) {

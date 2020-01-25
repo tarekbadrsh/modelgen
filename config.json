@@ -1,6 +1,6 @@
 {
-    "AppName"               :   "web-api",
-    "Module"                :   "github.com/tarekbadrshalaan/modelgen/web-api",
+    "AppName"               :   "modelgen-concept/web-api",
+    "Module"                :   "github.com/tarekbadrshalaan/modelgen/modelgen-concept/web-api",
     "DBConnectionString"    :   "host=127.0.0.1 port=5432 user=postgres password=postgres dbname=dvdrental sslmode=disable",
     "DBEngine"              :   "postgres",
     "WebAddress"            :   "0.0.0.0",
