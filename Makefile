@@ -18,11 +18,11 @@ build:
 run:build
 	- ./modelgen
 
-### * make run								build concept-api (concept) binary 
+### * make build-api								build concept-api (concept) binary 
 build-api:run
 	- cd modelgen-concept/concept-api && go build .
 
-### * make run								run concept-api (concept) binary 
+### * make run-api								run concept-api (concept) binary 
 run-api: build-api
 	- cd modelgen-concept/concept-api && ./concept-api
 

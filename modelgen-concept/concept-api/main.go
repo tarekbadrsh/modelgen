@@ -13,7 +13,10 @@ import (
 
 func main() {
 	/* configuration initialize start */
-	c := config.GetConfigs()
+	c, err := config.GetConfigs()
+	if err != nil {
+		panic(err)
+	}
 	/* configuration initialize end */
 
 	// database.

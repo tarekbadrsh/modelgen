@@ -22,21 +22,21 @@ type Config struct {
 }
 
 // GetConfigs : Get application configuration
-func GetConfigs() Config {
+func GetConfigs() (c Config, err error) {
 	readConfigOnce.Do(func() {
-		err := configuration.JSON("config.json", &c)
-		if err != nil {
-			fmt.Println(err)
+		jsonerr := configuration.JSON("config.json", &c)
+		if jsonerr != nil {
+			fmt.Println(jsonerr)
 			// get configuration from environment variables
-			err := envconfig.Process("", &c)
+			err = envconfig.Process("", &c)
 			if err != nil {
-				panic(fmt.Sprintf("Error while initiating app configuration : %v", err))
-			}
-			if c.DBConnectionString == "" {
-				panic("No Database Connectionstring found")
+				err = fmt.Errorf("Error while initiating app configuration : %v", err)
 			}
 		}
+		if c.DBConnectionString == "" {
+			err = fmt.Errorf("No Database Connectionstring found")
+		}
 	})
-	return c
+	return c, err
 }
 
