@@ -6,6 +6,7 @@ import (
 	"text/template"
 
 	"github.com/jinzhu/inflection"
+	"github.com/tarekbadrshalaan/modelgen/templates/logger"
 )
 
 // DALTemplate : return template of DAL.
@@ -38,14 +39,44 @@ func DBTemplate() (*template.Template, error) {
 	return getTemplate(dbTmpl)
 }
 
+// ConfigjsonTemplate : return template of Config json file.
+func ConfigjsonTemplate() (*template.Template, error) {
+	return getTemplate(configjsonTmpl)
+}
+
 // ConfigTemplate : return template of Config.
 func ConfigTemplate() (*template.Template, error) {
 	return getTemplate(configTmpl)
 }
 
+// IloggerTemplate : return template of Ilogger.
+func IloggerTemplate() (*template.Template, error) {
+	return getTemplate(logger.ILoggerTmpl)
+}
+
+// EmptyloggerTemplate : return template of EmptyLogger.
+func EmptyloggerTemplate() (*template.Template, error) {
+	return getTemplate(logger.EmptyLoggerTmpl)
+}
+
+// ZaploggerTemplate : return template of ZapLogger.
+func ZaploggerTemplate() (*template.Template, error) {
+	return getTemplate(logger.ZapLoggerTmpl)
+}
+
 // MainTemplate : return template of Main.
 func MainTemplate() (*template.Template, error) {
 	return getTemplate(mainTmpl)
+}
+
+// DockerTemplate : return template of Dockerfile.
+func DockerTemplate() (*template.Template, error) {
+	return getTemplate(dockerTmpl)
+}
+
+// EnvTemplate : return template of environment variables file.
+func EnvTemplate() (*template.Template, error) {
+	return getTemplate(envTmpl)
 }
 
 // ModuleTemplate : return template of go.mod.
@@ -71,6 +102,7 @@ func getTemplate(temp string) (*template.Template, error) {
 		"toLower":        strings.ToLower,
 		"DTO":            structNameDTO,
 		"DAL":            structNameDAL,
+		"backQuote":      backQuote,
 	}
 
 	tmpl, err := template.New("model").Funcs(funcMap).Parse(temp)
@@ -91,4 +123,8 @@ func structNameDTO(s string) string {
 
 func structNameDAL(s string) string {
 	return fmt.Sprintf("%vDAL", s)
+}
+
+func backQuote() string {
+	return fmt.Sprint("`")
 }

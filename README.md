@@ -16,6 +16,7 @@ The Generated Application inculeds :-
 
 - Go mod
 - Configeration file
+- Dockerfile
 - DAL,BLL,DTO,API and API_Tests for every Database Table 
 - Compatalbe with `mysql` `postgres` `mssql` `sqlite` `oracle`
 - Using [![GORM](https://github.com/jinzhu/gorm)](https://github.com/jinzhu/gorm) as ORM
@@ -27,6 +28,7 @@ $ go get -u github.com/tarekbadrshalaan/modelgen
 $ vi config.json
   
   {
+    "AppName"               :   "Application",
     "Module"                :   "{{github.com/packagepath}}",
     "DBConnectionString"    :   "{{Database ConnectionString}}",
     "DBEngine"              :   "{{Database Engine}}",
@@ -51,8 +53,9 @@ pg_restore -U postgres -d dvdrental ~/dvdrental.tar
 
 $ vi config.json
   {
+    "AppName"               :   "Application",
     "Module"                :   "github.com/Application",
-    "DBConnectionString"    :   "{{Database ConnectionString}}",
+    "DBConnectionString"    :   "host=127.0.0.1 port=5432 user=postgres password=postgres dbname=dvdrental sslmode=disable",
     "DBEngine"              :   "postgres",
     "WebAddress"            :   "0.0.0.0",
     "WebPort"               :   7070
@@ -64,6 +67,7 @@ $ cd Application/
     ├──> config.json
     ├──> go.mod 
     ├──> main.go
+    ├──> Dockerfile
     db
     │	├──> database.go
     api
@@ -85,10 +89,18 @@ $ cd Application/
     ─────────────────────────────
 
 ```
+## Docker 
+```
+# build docker image
+docker build -t concept-api .
+```
+```
+# run docker container 
+docker run --rm -it -p 7070:7070 --env-file .env --network host concept-api
+```
 
-
-## standar
-- in [![standar](https://github.com/tarekbadrshalaan/modelgen/tree/master/standar)](https://github.com/tarekbadrshalaan/modelgen/tree/master/standar) you can find the expected result of the generator. 
+## Concept
+- in [![standar](https://github.com/tarekbadrshalaan/modelgen/tree/master/modelgen-concept/web-api)](https://github.com/tarekbadrshalaan/modelgen/tree/master/modelgen-concept/web-api) you can find the expected result of the generator. 
 
 ## Contributing
 

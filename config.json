@@ -1,7 +1,9 @@
 {
-    "Module"                :   "github.com/tarekbadrshalaan/modelgen/Application",
-    "DBConnectionString"    :   "host=127.0.0.1 port=5432 user=tarek password=123 dbname=dvdrental sslmode=disable",
-    "DBEngine"              :   "postgres",
-    "WebAddress"            :   "0.0.0.0",
-    "WebPort"               :   7070
+    "App_Name"              :   "concept-api",
+    "Target_Directory"      :   "modelgen-concept/concept-api",
+    "Module"                :   "github.com/tarekbadrshalaan/modelgen/modelgen-concept/concept-api",
+    "DB_CONNECTION_STRING"  :   "host=127.0.0.1 port=5432 user=postgres password=postgres dbname=dvdrental",
+    "DB_ENGINE"             :   "postgres",
+    "API_ADDRESS"           :   "0.0.0.0",
+    "API_PORT"              :   7070
 }
