@@ -84,7 +84,7 @@ func main() {
 	}
 
 	singlefile := []gen{
-		{filepath: c.TargetDirectory + "/api/router.go", tmpfunc: templates.APIRouterTemplate, data: c},
+		{dir: c.TargetDirectory + "/api", filepath: c.TargetDirectory + "/api/router.go", tmpfunc: templates.APIRouterTemplate, data: c},
 
 		{dir: c.TargetDirectory + "/db", filepath: c.TargetDirectory + "/db/database.go", tmpfunc: templates.DBTemplate},
 		{dir: c.TargetDirectory + "/test", filepath: c.TargetDirectory + "/test/test.json", tmpfunc: templates.ConfigjsonTemplate, data: c},
