@@ -12,13 +12,13 @@
 
 Application to create (start app) go webservice with 3-Tier Architecture.
 
-The Generated Application inculeds :- 
+The Generated Application includes :- 
 
 - Go mod
-- Configeration file
+- Configuration file
 - Dockerfile
 - DAL,BLL,DTO,API and API_Tests for every Database Table 
-- Compatalbe with `mysql` `postgres` `mssql` `sqlite` `oracle`
+- Compatible with `mysql` `postgres` `mssql` `sqlite` `oracle`
 - Using [![GORM](https://github.com/jinzhu/gorm)](https://github.com/jinzhu/gorm) as ORM
 
 ## Installation
@@ -47,7 +47,7 @@ $ ./Application
 ## Example 
 - postgres Database
 http://www.postgresqltutorial.com/postgresql-sample-database/
-to restor the database use : 
+to restore the database use : 
 ```
 pg_restore -U postgres -d dvdrental ~/dvdrental.tar
 
@@ -100,7 +100,7 @@ docker run --rm -it -p 7070:7070 --env-file .env --network host concept-api
 ```
 
 ## Concept
-- in [![standar](https://github.com/tarekbadrshalaan/modelgen/tree/master/modelgen-concept/web-api)](https://github.com/tarekbadrshalaan/modelgen/tree/master/modelgen-concept/web-api) you can find the expected result of the generator. 
+- in [![standard](https://github.com/tarekbadrshalaan/modelgen/tree/master/modelgen-concept/web-api)](https://github.com/tarekbadrshalaan/modelgen/tree/master/modelgen-concept/web-api) you can find the expected result of the generator. 
 
 ## Contributing
 
