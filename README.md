@@ -48,9 +48,31 @@ $ ./Application
 - postgres Database
 http://www.postgresqltutorial.com/postgresql-sample-database/
 to restore the database use : 
+- Run postgres on localhost, use this command for restoring database:
 ```
 pg_restore -U postgres -d dvdrental ~/dvdrental.tar
+```
 
+- Run postgres into docker container:
+```
+# run the container
+- docker run --rm -it --name pg -p 5454:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_DB=dvdrental -v $(pwd):/mydata postgres
+
+# open the container to execute bash command
+- docker exec -it pg bash
+
+# restore the database
+- cd mydata
+- pg_restore -U postgres -d dvdrental dvdrental.tar
+
+# review the data in postgres
+- psql -h localhost -U postgres
+- \c dvdrental;
+- select * from actor;
+```
+
+- Run the application.
+```
 $ vi config.json
   {
     "AppName"               :   "Application",
