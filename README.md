@@ -56,9 +56,9 @@ pg_restore -U postgres -d dvdrental ~/dvdrental.tar
 - Run postgres into docker container:
 ```
 # run the container
-- docker run --rm -it --name pg -p 5454:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_DB=dvdrental -v $(pwd):/mydata postgres
+- docker run --rm -it --name pg -p 5454:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_DB=dvdrental -v $(pwd):/mydata postgres
 
-# open the container to execute bash command
+# open the pg container shell command
 - docker exec -it pg bash
 
 # restore the database

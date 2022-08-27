@@ -1,6 +1,6 @@
 {
-    "DB_CONNECTION_STRING"      :   "host=127.0.0.1 port=5432 user=postgres password=postgres dbname=dvdrental",
-    "DB_ENGINE"                 :   "postgres",
-    "API_ADDRESS"               :   "0.0.0.0",
-    "API_PORT"                  :   7070
+    "DB_CONNECTION_STRING": "host=127.0.0.1 port=5454 user=postgres password=postgres dbname=dvdrental sslmode=disable",
+    "DB_ENGINE": "postgres",
+    "API_ADDRESS": "0.0.0.0",
+    "API_PORT": 7070
 }
