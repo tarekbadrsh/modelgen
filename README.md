@@ -88,6 +88,7 @@ pass: admin
 - Host: 172.17.0.1 {or use docker inspect}
   $ docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container-ID>
 - port: 5454
+- DB=dvdrental
 - user: postgres
 - pass: postgres
 ```
