@@ -71,6 +71,27 @@ pg_restore -U postgres -d dvdrental ~/dvdrental.tar
 - select * from actor;
 ```
 
+- Run pgadmin4 into docker container:
+```
+# run the container
+docker run --rm -it -p 5151:80 --name=pnl -e "PGADMIN_DEFAULT_EMAIL=m@mod.com" -e "PGADMIN_DEFAULT_PASSWORD=admin" dpage/pgadmin4
+
+# open pgadmin4 in browser
+http://localhost:5151
+
+# login
+email: m@mod.com
+pass: admin
+
+# register - server
+- Name: {pick any name}
+- Host: 172.17.0.1 {or use docker inspect}
+  $ docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container-ID>
+- port: 5454
+- user: postgres
+- pass: postgres
+```
+
 - Run the application.
 ```
 $ vi config.json
